@@ -272,6 +272,10 @@ mod hand_tests {
         score.add_kseri();
         score.add_kseri();
         assert_eq!(score.kseri_count, 2);
+        
+        // Add double kseri
+        score.add_double_kseri();
+        assert_eq!(score.double_kseri_count, 1);
     }
 }
 

@@ -6,9 +6,11 @@ use wasm_bindgen::prelude::*;
 mod components;
 mod systems;
 mod resources;
+mod game_plugin;
 
-use systems::*;
+use game_plugin::KseriGamePlugin;
 use resources::*;
+use systems::GameState;
 
 fn main() {
     #[cfg(target_arch = "wasm32")]
@@ -28,19 +30,21 @@ fn main() {
         ..default()
     }));
     
-    // Add game state
-    app.init_state::<GameState>();
+    // Add the game plugin
+    app.add_plugins(KseriGamePlugin);
     
     // Add resources
     app.insert_resource(GameSettings {
-        player_name: "Player 1".to_string(),
-        opponent_name: "Player 2".to_string(),
+        player_name: "Arkid".to_string(),
+        opponent_name: "Sofia".to_string(),
     });
     app.insert_resource(NetworkState::default());
     
-    // Add systems
-    app.add_systems(Startup, (setup, setup_deck));
-    app.add_systems(Update, handle_card_selection);
+    // Add basic setup systems
+    app.add_systems(Startup, setup);
+    
+    // Start the game
+    app.add_systems(Update, start_game.run_if(resource_exists::<GameManager>));
     
     app.run();
 }
@@ -50,11 +54,21 @@ fn setup(mut commands: Commands) {
     
     // Simple text to verify it's working
     commands.spawn((
-        Text2d::new("Kseri Game - Loading..."),
+        Text2d::new("Kseri Game - Press SPACE to start"),
         TextFont {
-            font_size: 40.0,
+            font_size: 30.0,
             ..default()
         },
         TextColor(Color::WHITE),
     ));
+}
+
+fn start_game(
+    keys: Res<ButtonInput<KeyCode>>,
+    game_state: Res<State<GameState>>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
+    if keys.just_pressed(KeyCode::Space) && *game_state.get() == GameState::MainMenu {
+        next_state.set(GameState::GameSetup);
+    }
 }

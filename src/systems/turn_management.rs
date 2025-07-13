@@ -114,17 +114,23 @@ pub fn play_card_system(
                             let is_kseri = was_single_card && captured_cards.len() == 1 && 
                                 card.makes_kseri(1);
                             
+                            // Check for double Kseri (Jack capturing Jack)
+                            let is_double_kseri = is_kseri && 
+                                card.rank == Rank::Jack && 
+                                captured_cards.iter().any(|c| c.rank == Rank::Jack);
+                            
                             // Include the played card in captures
                             captured_cards.push(card);
                             captured_entities.push(*entity);
                             
                             // Send capture event
-                            capture_events.write(CaptureEvent {
+                            capture_events.send(CaptureEvent {
                                 player_id: event.player_id,
                                 played_card: card,
                                 captured_cards: captured_cards.clone(),
                                 captured_entities: captured_entities.clone(),
                                 is_kseri,
+                                is_double_kseri,
                             });
                             
                             // Update card entity location
@@ -196,7 +202,9 @@ pub fn process_capture_system(
         for (player, mut score) in score_query.iter_mut() {
             if player.id == event.player_id {
                 score.add_collected_cards(event.captured_entities.clone());
-                if event.is_kseri {
+                if event.is_double_kseri {
+                    score.add_double_kseri();
+                } else if event.is_kseri {
                     score.add_kseri();
                 }
                 break;

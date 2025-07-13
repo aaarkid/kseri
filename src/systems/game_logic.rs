@@ -109,6 +109,7 @@ pub struct CaptureEvent {
     pub captured_cards: Vec<Card>,
     pub captured_entities: Vec<Entity>,
     pub is_kseri: bool,
+    pub is_double_kseri: bool,
 }
 
 #[derive(Event)]

@@ -81,7 +81,8 @@ pub fn check_game_state_transitions(
             if let (Some(phase), Some(mut next_phase)) = (playing_phase, next_playing_phase) {
                 match phase.get() {
                     PlayingPhase::DealingCards => {
-                        // Check if dealing is complete
+                        // The dealing systems will handle the actual dealing
+                        // We just need to check when it's complete
                         let all_hands_ready = hand_query.iter().all(|hand| hand.count() == 4);
                         if all_hands_ready {
                             next_phase.set(PlayingPhase::PlayerTurn);

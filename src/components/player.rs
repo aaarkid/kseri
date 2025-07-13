@@ -154,6 +154,7 @@ pub fn sort_hand_by_suit_and_rank(
 pub struct Score {
     pub cards_collected: Vec<Entity>,
     pub kseri_count: u32,
+    pub double_kseri_count: u32,
     pub total_points: u32,
 }
 
@@ -170,6 +171,11 @@ impl Score {
     /// Increment kseri count
     pub fn add_kseri(&mut self) {
         self.kseri_count += 1;
+    }
+    
+    /// Increment double kseri count
+    pub fn add_double_kseri(&mut self) {
+        self.double_kseri_count += 1;
     }
     
     /// Get the number of collected cards
@@ -189,8 +195,9 @@ impl Score {
             }
         }
         
-        // Add Kseri bonuses (10 points each)
+        // Add Kseri bonuses (10 points each for regular, 20 for double)
         points += self.kseri_count * 10;
+        points += self.double_kseri_count * 20;
         
         self.total_points = points;
         points
