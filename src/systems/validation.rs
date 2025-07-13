@@ -2,6 +2,41 @@ use bevy::prelude::*;
 use crate::components::*;
 use crate::systems::game_logic::*;
 
+#[derive(Debug, Clone)]
+pub enum CaptureError {
+    NoMatch,
+}
+
+pub fn validate_capture_rules(played_card: Card, table_cards: &[Card]) -> Result<Vec<Card>, CaptureError> {
+    let mut captured = Vec::new();
+    
+    if played_card.rank == Rank::Jack {
+        // Jack captures all cards
+        captured.extend_from_slice(table_cards);
+    } else {
+        // Regular cards capture only matching ranks
+        for card in table_cards {
+            if card.rank == played_card.rank {
+                captured.push(*card);
+            }
+        }
+    }
+    
+    Ok(captured)
+}
+
+pub fn validate_kseri(played_card: Card, captured_cards: &[Card], was_single_card: bool) -> bool {
+    // Kseri happens when:
+    // 1. Exactly one card was captured
+    // 2. The played card is not a Jack
+    // 3. The captured card matches the played card's rank
+    // 4. There was only a single card on the table
+    captured_cards.len() == 1 
+        && was_single_card
+        && played_card.rank != Rank::Jack 
+        && captured_cards[0].rank == played_card.rank
+}
+
 pub fn validate_play_system(
     turn_manager: Res<TurnManager>,
     mut action_events: EventReader<PlayerActionEvent>,
@@ -95,51 +130,6 @@ pub fn validate_state_system(
         // error!("State validation failed: Round {} exceeds total rounds {}", 
         //     game_manager.round_number, game_manager.total_rounds);
     }
-}
-
-pub fn validate_capture_rules(
-    played_card: Card,
-    table_cards: &[Card],
-) -> Result<Vec<Card>, String> {
-    if table_cards.is_empty() {
-        return Ok(vec![]);
-    }
-    
-    let mut captured = Vec::new();
-    
-    if played_card.rank == Rank::Jack {
-        // Jack captures all cards
-        captured.extend_from_slice(table_cards);
-    } else {
-        // Regular capture - only cards of same rank
-        for &card in table_cards {
-            if card.rank == played_card.rank {
-                captured.push(card);
-            }
-        }
-        
-        if captured.is_empty() {
-            // Check if any card can be captured
-            for &card in table_cards {
-                if played_card.can_capture(&card) {
-                    return Err("Card can capture but no matching rank found".to_string());
-                }
-            }
-        }
-    }
-    
-    Ok(captured)
-}
-
-pub fn validate_kseri(
-    played_card: Card,
-    captured_cards: &[Card],
-    was_single_card_on_table: bool,
-) -> bool {
-    // Kseri only happens when capturing a single card with same rank (not Jack)
-    captured_cards.len() == 1 && 
-    was_single_card_on_table &&
-    played_card.makes_kseri(&captured_cards[0])
 }
 
 #[cfg(test)]

@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::components::{Card, PlayerId};
 
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum GameState {
@@ -7,4 +8,93 @@ pub enum GameState {
     Connecting,
     Playing,
     GameOver,
+    GameSetup,
+}
+
+#[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
+pub enum PlayingPhase {
+    #[default]
+    DealingCards,
+    PlayerTurn,
+    ProcessingCapture,
+    RoundEnd,
+}
+
+#[derive(Resource)]
+pub struct GameManager {
+    pub round_number: u32,
+    pub total_rounds: u32,
+    pub deck_entity: Option<Entity>,
+    pub table_entity: Option<Entity>,
+}
+
+impl GameManager {
+    pub fn new(total_rounds: u32) -> Self {
+        Self {
+            round_number: 0,
+            total_rounds,
+            deck_entity: None,
+            table_entity: None,
+        }
+    }
+
+    pub fn start_new_round(&mut self) {
+        self.round_number += 1;
+    }
+
+    pub fn is_game_complete(&self) -> bool {
+        self.round_number >= self.total_rounds
+    }
+}
+
+#[derive(Resource, Default)]
+pub struct TurnManager {
+    pub current_player: PlayerId,
+    pub turn_number: u32,
+    pub waiting_for_action: bool,
+}
+
+impl TurnManager {
+    pub fn switch_turn(&mut self) {
+        self.current_player = match self.current_player {
+            PlayerId::PLAYER_ONE => PlayerId::PLAYER_TWO,
+            PlayerId::PLAYER_TWO => PlayerId::PLAYER_ONE,
+            _ => PlayerId::PLAYER_ONE,
+        };
+        self.turn_number += 1;
+        self.waiting_for_action = false;
+    }
+}
+
+#[derive(Resource, Default)]
+pub struct RoundState {
+    pub cards_dealt: u32,
+    pub initial_table_cards: Vec<Card>,
+    pub captures_this_round: Vec<(PlayerId, Vec<Card>)>,
+}
+
+#[derive(Clone)]
+pub struct LastCapture {
+    pub player_id: PlayerId,
+    pub captured_cards: Vec<Card>,
+    pub was_kseri: bool,
+}
+
+#[derive(Event)]
+pub struct PlayerActionEvent {
+    pub player_id: PlayerId,
+    pub action: PlayerAction,
+}
+
+#[derive(Clone)]
+pub enum PlayerAction {
+    PlayCard(Entity),
+}
+
+#[derive(Event)]
+pub struct CaptureEvent {
+    pub player_id: PlayerId,
+    pub played_card: Card,
+    pub captured_cards: Vec<Card>,
+    pub is_kseri: bool,
 }

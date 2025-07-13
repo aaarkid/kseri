@@ -170,3 +170,9 @@ impl PlayerId {
     pub const PLAYER_ONE: PlayerId = PlayerId(0);
     pub const PLAYER_TWO: PlayerId = PlayerId(1);
 }
+
+impl Default for PlayerId {
+    fn default() -> Self {
+        Self::PLAYER_ONE
+    }
+}
