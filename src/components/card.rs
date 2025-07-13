@@ -107,7 +107,7 @@ impl fmt::Display for Rank {
     }
 }
 
-#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
 pub struct Card {
     pub suit: Suit,
     pub rank: Rank,
