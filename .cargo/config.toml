@@ -1,0 +1,9 @@
+[target.wasm32-unknown-unknown]
+runner = "wasm-server-runner"
+
+[unstable]
+bindeps = true
+
+# Environment variables for WASM builds
+[env]
+RUSTFLAGS = "--cfg=web_sys_unstable_apis"
