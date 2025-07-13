@@ -33,28 +33,36 @@ fn main() {
     
     // Add resources
     app.insert_resource(GameSettings {
-        player_name: "Player 1".to_string(),
-        opponent_name: "Player 2".to_string(),
+        player_name: "Arkid".to_string(),
+        opponent_name: "Sofia".to_string(),
     });
     app.insert_resource(NetworkState::default());
+    app.insert_resource(TurnManager::default());
+    
+    // Add events
+    app.add_event::<PlayerActionEvent>();
+    app.add_event::<CaptureEvent>();
+    app.add_event::<RoundEndEvent>();
+    app.add_event::<GameStateTransitionEvent>();
+    app.add_event::<KseriEvent>();
+    app.add_event::<GameOverEvent>();
     
     // Add systems
-    app.add_systems(Startup, (setup, setup_deck));
-    app.add_systems(Update, handle_card_selection);
+    app.add_systems(Startup, (setup, setup_deck, setup_ui));
+    app.add_systems(Update, (
+        handle_card_selection,
+        update_score_displays,
+        update_turn_indicator,
+        update_deck_counter,
+        update_game_status_messages,
+        handle_kseri_event,
+        handle_round_end_event,
+        handle_game_over_event,
+    ));
     
     app.run();
 }
 
 fn setup(mut commands: Commands) {
     commands.spawn(Camera2d);
-    
-    // Simple text to verify it's working
-    commands.spawn((
-        Text2d::new("Kseri Game - Loading..."),
-        TextFont {
-            font_size: 40.0,
-            ..default()
-        },
-        TextColor(Color::WHITE),
-    ));
 }

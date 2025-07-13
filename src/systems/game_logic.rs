@@ -122,3 +122,15 @@ pub struct GameStateTransitionEvent {
     pub from: GameState,
     pub to: GameState,
 }
+
+#[derive(Event)]
+pub struct KseriEvent {
+    pub player_id: PlayerId,
+    pub card: Card,
+}
+
+#[derive(Event)]
+pub struct GameOverEvent {
+    pub winner: Option<PlayerId>,
+    pub final_scores: [(PlayerId, u32); 2],
+}

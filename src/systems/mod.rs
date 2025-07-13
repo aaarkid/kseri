@@ -6,6 +6,7 @@ pub mod rendering;
 pub mod state_transitions;
 pub mod turn_management;
 pub mod validation;
+pub mod ui;
 
 #[cfg(test)]
 pub mod tests;
@@ -20,3 +21,4 @@ pub use rendering::*;
 pub use state_transitions::*;
 pub use turn_management::*;
 pub use validation::*;
+pub use ui::*;
