@@ -1,0 +1,11 @@
+# Task ID: 6
+# Title: Implement Card Animation System
+# Status: pending
+# Dependencies: 5
+# Priority: medium
+# Description: Create smooth animations for card movements and game actions
+# Details:
+Use Bevy's animation system to create tweened movements for: dealing cards from deck to hands/table, playing cards from hand to table, collecting cards from table, shuffling animation. Implement easing functions for natural movement. Add particle effects or highlights for Kseri moments. Create hover and selection states for interactive cards.
+
+# Test Strategy:
+Test animation smoothness at different frame rates. Verify animations complete properly. Test interruption handling if new animation starts before previous finishes. Check visual feedback clarity.

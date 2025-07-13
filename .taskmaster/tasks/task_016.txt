@@ -1,0 +1,49 @@
+# Task ID: 16
+# Title: Create Pixel Art Assets for Greek-Themed Kseri Cards
+# Status: done
+# Dependencies: 5
+# Priority: high
+# Description: Design and create comprehensive pixel art assets including all 52 playing cards, card back design, table texture, and UI elements in a cohesive Greek-inspired retro aesthetic using programmatic generation
+# Details:
+Create pixel art card designs programmatically at 64x96 resolution using Python with PIL/Pillow or Rust image generation libraries. Generate clear suit symbols: Hearts (red), Diamonds (red), Clubs (black), Spades (black) using 8x8 pixel arrays defined in code. Implement rank indicators (A, 2-10, J, Q, K) using programmatically defined 5x7 pixel font matrices. Generate Greek-inspired decorative borders using algorithmic patterns like meander/key patterns, with corner flourishes at 4x4 pixels using mathematical functions. Create unique face cards (J, Q, K) with simplified Greek deity/hero representations using pixel art generation techniques: Jacks as young warriors, Queens as goddesses (Athena, Hera, Aphrodite), Kings as gods (Zeus, Poseidon, Ares). Generate cohesive card back design featuring Greek column motifs or amphora patterns using symmetrical algorithms. Limit color palette to 16 colors maximum defined as constants: base colors (white, black, 2 grays), suit colors (2 reds, 2 blues), accent colors (gold, bronze, olive, terracotta). Create table texture as repeating 32x32 tile with marble or stone pattern using Perlin noise or similar algorithms. Generate UI element sprites programmatically: score display frames (Greek border style), button designs with hover states, turn indicator arrows, deck counter icon. Export all assets as PNG files with transparency. Create sprite atlas for efficient loading in Bevy. Include generation scripts for future modifications.
+
+# Test Strategy:
+Verify all 52 cards are visually distinct and readable at actual game size. Test card visibility against table texture background for sufficient contrast. Validate color palette consistency across all assets. Test card rendering in Bevy at different zoom levels (1x, 2x scaling). Verify face card designs are recognizable as J/Q/K at small sizes. Test UI elements for clarity and proper alignment when integrated. Check sprite atlas loading performance. Verify transparency works correctly for overlapping cards. Test aesthetic cohesion by viewing all assets together. Validate that Greek theming is consistent but doesn't impair gameplay readability. Test that generation scripts produce consistent output across runs.
+
+# Subtasks:
+## 1. Set Up Pixel Art Generation Framework and Define Color Palette [done]
+### Dependencies: None
+### Description: Configure the programmatic pixel art development environment and establish the 16-color Greek-themed palette as code constants
+### Details:
+Set up Python environment with PIL/Pillow or Rust with image crate. Define color palette as constants in code: 4 base colors (pure white #FFFFFF, pure black #000000, light gray #C0C0C0, dark gray #808080), 4 suit colors (bright red #FF0000, dark red #8B0000, bright blue #0000FF, dark blue #00008B), and 8 accent colors (gold #FFD700, bronze #CD7F32, olive #808000, terracotta #C65D00, marble white #F8F8FF, aegean blue #1E90FF, laurel green #4B6F44, wine #722F37). Create helper functions for pixel drawing, pattern generation, and color manipulation. Implement base image creation functions with proper transparency support.
+
+## 2. Generate Card Template and Basic Elements Programmatically [done]
+### Dependencies: 16.1
+### Description: Create code to generate the base 64x96 pixel card template with Greek-inspired borders, suit symbols, and rank typography
+### Details:
+Write function to generate card template with 2-pixel white border and 1-pixel black outline. Implement Greek meander pattern generation algorithm using 4x4 pixel tile patterns that repeat around card edges. Create suit symbol generators using 8x8 pixel arrays: define hearts and diamonds shapes in code with two-tone red fills, clubs and spades with black and gray shading. Implement 5x7 pixel font renderer by defining each character as a bit pattern. Create layout system that positions rank/suit at top-left and bottom-right corners with proper rotation for bottom elements. Add drop shadow effect generation using alpha blending. Save generation functions as reusable modules.
+
+## 3. Implement Face Card Character Generation Algorithms [done]
+### Dependencies: 16.2
+### Description: Create algorithms to generate unique Greek deity/hero pixel art for all 12 face cards programmatically
+### Details:
+Develop character generation system using predefined pixel patterns for Greek-style figures. Create base humanoid template (32x48 pixels) with head, torso, and limbs positions. Define distinguishing features as pixel overlays: Jacks - add warrior elements (spear for Achilles, shield for Perseus, sword for Theseus, helmet for Jason). Queens - implement goddess attributes (roses pattern for Aphrodite, owl sprite for Athena, peacock feather for Hera, bow shape for Artemis). Kings - generate god symbols (lightning bolt for Zeus, lyre outline for Apollo, trident shape for Poseidon, helm silhouette for Hades). Use algorithmic color fills limiting to 4-5 colors per character. Apply Greek pottery art style with profile generation and geometric shape primitives.
+
+## 4. Generate Number Cards and Card Back Design Programmatically [done]
+### Dependencies: 16.3
+### Description: Create code to generate all 40 number cards and an ornate Greek-themed card back design
+### Details:
+Write pip layout algorithm for number cards: Ace with single centered 16x16 symbol, numbers 2-10 with traditional pip arrangements calculated algorithmically based on card value. For card back, create symmetrical pattern generator: central amphora shape using bezier curves converted to pixels (24x32), olive branch border using recursive leaf placement algorithm. Implement Greek key pattern generator using path-following algorithm for frame with mathematical corner rosette generation. Use golden ratio for element positioning. Ensure back design has perfect rotational symmetry. Export generation functions with parameters for variations.
+
+## 5. Generate Table Texture and UI Elements Through Code [done]
+### Dependencies: 16.4
+### Description: Create algorithms for generating marble table texture and all UI component sprites programmatically
+### Details:
+Implement 32x32 seamless marble texture generator using Perlin noise for realistic veining with white, light gray, and subtle blue color mapping. Create UI element generators: Score frame function creating 64x24 pixel Greek borders using repeating pattern algorithm with parametric gold/bronze gradients. Button generator producing 48x24 pixel sprites with three states (normal/hover/pressed) using elevation simulation through systematic pixel shifting. Turn indicator arrow generator creating 16x16 animated frames with mathematical glow effect using radial gradient approximation. Deck counter icon generator showing 24x24 pixel stacked cards with offset algorithm and number overlay area. Implement 8-frame spinner animation using rotating Greek pattern with transformation matrices.
+
+## 6. Create Asset Export Pipeline and Sprite Atlas Generator [done]
+### Dependencies: 16.5
+### Description: Build automated pipeline to export all generated assets and create optimized sprite atlas for Bevy
+### Details:
+Write main generation script that calls all asset generators and exports results. Implement batch PNG export with proper transparency for all 52 cards + 1 card back. Create sprite packing algorithm to generate optimal atlas layout (512x512 or 1024x1024). Generate RON metadata file with sprite coordinates, names, and pivot points for Bevy. Implement file organization system: /assets/cards/ for individuals, /assets/atlas/ for packed textures, /assets/ui/ for interface elements. Include generation scripts in /assets/generators/ with configuration files. Create build script for regenerating all assets with single command. Document generation parameters and customization options in README.
+

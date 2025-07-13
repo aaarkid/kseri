@@ -1,0 +1,43 @@
+# Task ID: 4
+# Title: Implement Kseri Game Rules Engine
+# Status: pending
+# Dependencies: 3
+# Priority: high
+# Description: Create the rule system that validates moves and handles card collection logic
+# Details:
+Core game logic is partially implemented in systems/game_logic.rs, validation.rs, and turn_management.rs. Need to complete: initial dealing system (4 cards to each player, 4 to table, ensuring no Jacks on initial table), subsequent dealing when hands empty (4 cards each), complete final scoring with majority cards bonus (+3 points), and end-game logic to give remaining table cards to last capturer. The Card::kseri_value() method exists but scoring aggregation needs completion.
+
+# Test Strategy:
+Test all valid and invalid move scenarios. Verify collection happens only on rank match. Test Kseri scoring with Jacks. Test initial dealing ensures no Jacks on table. Test subsequent dealing triggers correctly. Verify final score calculation includes majority bonus. Test last capturer receives remaining cards.
+
+# Subtasks:
+## 1. Implement move validation logic [pending]
+### Dependencies: None
+### Description: Create validation system to check if a card can be played based on Kseri rules
+### Details:
+Implement functions to validate card plays including: checking if played card matches top card value, verifying Jack can capture any card, ensuring player has the card in hand, and preventing invalid moves. Include comprehensive error handling and clear validation messages.
+
+## 2. Create card collection mechanics [pending]
+### Dependencies: 4.1
+### Description: Implement the core mechanic for capturing cards from the table
+### Details:
+Build the card capture logic including: capturing when values match, Jack captures all, collecting entire pile when capture occurs, adding captured cards to player's collection pile, clearing table after capture, and tracking which player made the last capture for end-game scoring.
+
+## 3. Handle special Kseri scoring rules [pending]
+### Dependencies: 4.2
+### Description: Implement the unique Kseri scoring system with special card values
+### Details:
+Complete scoring implementation building on existing Card::kseri_value() method. Create scoring aggregation for: regular Kseri (capturing single card) worth 10 points, double Kseri (capturing Jack with Jack) worth 20 points, special card values already defined in kseri_value(), and tracking score throughout the game. Focus on aggregating scores since individual card values are already implemented.
+
+## 4. Implement initial and subsequent dealing logic [pending]
+### Dependencies: 4.1, 4.2
+### Description: Create the complete dealing system for Kseri's card distribution
+### Details:
+Implement missing dealing mechanics: initial deal of 4 cards to each player and 4 to table (with logic to ensure no Jacks in initial table cards, reshuffling if necessary), subsequent deals of 4 cards to each player when both hands are empty, continuing until deck exhausted, and managing deal order based on current dealer. This is a key missing piece identified in the codebase.
+
+## 5. Complete final scoring with majority bonus and end-game logic [pending]
+### Dependencies: 4.3, 4.4
+### Description: Finish the scoring system with majority cards bonus and last capturer rules
+### Details:
+Complete the final scoring implementation: add majority cards bonus (+3 points for having more than 26 cards), implement end-game rule where remaining table cards go to the player who made the last capture, integrate with existing Card::kseri_value() calculations, determine winner based on total points, handle tie-breaking rules, and provide detailed score breakdown. This addresses the incomplete scoring aggregation identified in the analysis.
+

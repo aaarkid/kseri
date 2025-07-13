@@ -1,0 +1,11 @@
+# Task ID: 7
+# Title: Build Player Input and Interaction System
+# Status: pending
+# Dependencies: 5, 6
+# Priority: high
+# Description: Implement mouse/touch controls for playing cards with proper feedback
+# Details:
+Implement click-to-select and click-to-play card mechanics. Add hover states for valid cards during player's turn. Create drag-and-drop as alternative input method. Disable interactions during opponent's turn. Add visual feedback for invalid move attempts. Implement card selection highlighting.
+
+# Test Strategy:
+Test click detection accuracy on cards. Verify only valid cards can be selected. Test turn-based input blocking. Verify drag-and-drop works across browsers. Test touch input on mobile browsers.

@@ -1,0 +1,43 @@
+# Task ID: 5
+# Title: Create Card Rendering and Visual Assets
+# Status: pending
+# Dependencies: 1
+# Priority: medium
+# Description: Implement the visual representation of cards and game board using Bevy's rendering system
+# Details:
+Card visual assets are FULLY IMPLEMENTED in assets/cards.rs with beautiful Greek-themed pixel art (64x96 cards, meander borders, deity artwork for face cards). Now need to integrate these assets with Bevy: load generated card images as textures, create card entity spawning system with sprite components, implement layout managers for hand positions/table spread/score piles, develop z-ordering system for proper card overlap (especially critical for table pile), and handle window resize with camera scaling. The pixel art generation is complete but the entire Bevy rendering integration remains to be implemented.
+
+# Test Strategy:
+Verify all generated card textures load correctly in Bevy. Test card entity spawning and sprite component attachment. Validate layout managers position cards correctly in all game areas. Test z-ordering with overlapping cards on table pile. Verify window resize maintains proper scaling and positions. Test card visibility at different resolutions.
+
+# Subtasks:
+## 1. Load generated card images as Bevy textures [pending]
+### Dependencies: None
+### Description: Integrate the existing Greek-themed pixel art assets from assets/cards.rs into Bevy's texture system
+### Details:
+The card assets are already generated in assets/cards.rs with 64x96 pixel art, meander borders, and deity artwork. Create a texture loading system that reads these generated images and converts them to Bevy texture handles. Implement texture atlas or individual texture management. Handle card back texture separately for opponent cards.
+
+## 2. Implement card entity spawning system with sprite components [pending]
+### Dependencies: 5.1
+### Description: Create the core card rendering system using Bevy's sprite system to display card entities in the game
+### Details:
+Build card entity spawning system that creates Bevy entities with Sprite components using loaded textures. Implement card-to-sprite mapping based on Card struct (suit/rank). Handle face/back sprite switching for opponent cards. Set up proper sprite sizing (64x96) and initial transforms. Create component bundles for card entities.
+
+## 3. Create layout managers for hand, table, and score pile positions [pending]
+### Dependencies: 5.2
+### Description: Build specialized layout systems for each game area that properly position and space cards
+### Details:
+Implement HandLayout for player (bottom) and opponent (top) hands with proper card spacing and overlap. Create TableLayout for center pile with spread/stacked arrangement. Build ScorePileLayout for collected cards display. Each layout should calculate positions based on card count and available screen space. Handle special cases like single card vs multiple cards.
+
+## 4. Develop z-ordering system for card overlap on table pile [pending]
+### Dependencies: 5.2, 5.3
+### Description: Implement robust z-ordering to handle card layering, especially critical for the table pile where cards stack
+### Details:
+Create z-order management using Bevy's Transform z-coordinate. Implement dynamic z-ordering where newer cards on table pile have higher z-values. Handle special cases: selected card brings to front, animation transitions maintain proper order, hand cards overlap correctly. Table pile must show all cards slightly offset for visibility.
+
+## 5. Implement window resize handling with camera scaling [pending]
+### Dependencies: 5.3, 5.4
+### Description: Create responsive system that handles window resizes while maintaining card visibility and proportions
+### Details:
+Set up Bevy camera with proper projection for card game view. Implement window resize event handler that recalculates camera scale. Update all layout managers on resize to reposition cards. Maintain aspect ratio of 64x96 cards. Define minimum/maximum zoom levels. Ensure all game areas remain visible at any window size.
+

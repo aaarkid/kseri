@@ -1,0 +1,11 @@
+# Task ID: 12
+# Title: Create Game Flow and Screens
+# Status: pending
+# Dependencies: 8, 11
+# Priority: medium
+# Description: Implement the different game screens and flow between them
+# Details:
+Create name selection screen with buttons for Arkid/Sofia. Implement waiting screen with 'Waiting for opponent...' message and spinner. Build game-over screen showing final scores, winner announcement, and 'Play Again' button. Add smooth transitions between screens. Handle edge cases like opponent disconnecting during name selection.
+
+# Test Strategy:
+Test all screen transitions. Verify game flow from start to end. Test 'Play Again' functionality. Verify proper cleanup between games. Test edge cases in screen flow.

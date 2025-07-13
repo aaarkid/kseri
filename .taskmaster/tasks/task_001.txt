@@ -1,0 +1,43 @@
+# Task ID: 1
+# Title: Initialize Rust/Bevy Project Structure
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Set up the initial Rust project with Bevy game engine and configure it for WebAssembly compilation
+# Details:
+Create a new Rust project using cargo. Add Bevy as a dependency with WASM support. Set up the basic project structure with separate modules for game logic, networking, and UI. Configure Cargo.toml with necessary dependencies including bevy, wasm-bindgen, web-sys for browser APIs, and tokio-tungstenite for WebSocket support. Create wasm build configuration and basic index.html template for serving the game.
+
+# Test Strategy:
+Verify that the project compiles to both native and WASM targets. Test that a basic Bevy window opens in the browser when served via a local web server. Ensure all dependencies are properly resolved.
+
+# Subtasks:
+## 1. Create Rust project structure [done]
+### Dependencies: None
+### Description: Initialize a new Rust project with cargo and set up the basic directory structure for a Bevy game
+### Details:
+Run `cargo new kseri --bin` to create the project. Create directories for assets/, src/components/, src/systems/, src/resources/, and web/ for organizing game code and web deployment files
+
+## 2. Configure Bevy dependencies [done]
+### Dependencies: 1.1
+### Description: Add Bevy and related dependencies to Cargo.toml with proper feature flags for both native and WASM targets
+### Details:
+Add bevy = "0.14" with features = ["dynamic_linking"] for development. Configure target-specific dependencies using [target.'cfg(target_arch = "wasm32")'.dependencies] for wasm-bindgen and web-sys. Add bevy_egui for UI and other common Bevy plugins
+
+## 3. Set up WebAssembly build toolchain [done]
+### Dependencies: 1.2
+### Description: Install and configure the necessary tools for building Rust to WebAssembly
+### Details:
+Install wasm-pack with `cargo install wasm-pack`. Add rust target with `rustup target add wasm32-unknown-unknown`. Create a build script or Makefile for WASM compilation with proper flags like --target web and optimization settings
+
+## 4. Create module structure for game components [done]
+### Dependencies: 1.2
+### Description: Implement the initial module structure and basic game components following Bevy's ECS pattern
+### Details:
+Create mod.rs files for components, systems, and resources modules. Implement a basic App setup in main.rs with DefaultPlugins. Create placeholder modules for player, enemy, physics, and ui components. Set up proper module exports and imports
+
+## 5. Set up web serving infrastructure [done]
+### Dependencies: 1.3, 1.4
+### Description: Create the HTML template and web server setup for serving the WASM build
+### Details:
+Create index.html with proper canvas element and WASM loading script. Set up a simple HTTP server configuration (using python or node). Create a wasm-bindgen output directory structure. Configure proper CORS headers and MIME types for WASM files
+

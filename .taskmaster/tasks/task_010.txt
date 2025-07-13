@@ -1,0 +1,43 @@
+# Task ID: 10
+# Title: Build WebSocket Game Server
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Create the server-side component that manages game sessions and validates moves
+# Details:
+Implement WebSocket server using tokio-tungstenite. Create simple two-player matching: first connection waits, second triggers game start. Maintain authoritative game state on server. Validate all moves server-side before applying. Broadcast state changes to both clients. Handle player disconnections gracefully with timeout for reconnection.
+
+# Test Strategy:
+Test two-client connection and pairing. Verify move validation prevents cheating. Test state synchronization accuracy. Simulate network issues and verify recovery. Load test with multiple reconnections.
+
+# Subtasks:
+## 1. Set up Tokio WebSocket server with basic connection handling [done]
+### Dependencies: None
+### Description: Initialize a Rust project with tokio-tungstenite for WebSocket support and implement basic connection acceptance
+### Details:
+Create new Rust binary crate for the game server. Add dependencies: tokio (with full features), tokio-tungstenite, futures-util, serde, serde_json. Set up basic WebSocket server listening on port 8080. Implement connection upgrade from HTTP to WebSocket. Create basic connection handler that logs new connections and handles the WebSocket handshake.
+
+## 2. Implement client connection pool and session management [done]
+### Dependencies: 10.1
+### Description: Create data structures to track connected clients and manage their lifecycle
+### Details:
+Design ClientConnection struct with unique ID, WebSocket sink/stream, connection state, and player name. Create ConnectionPool using Arc<Mutex<HashMap>> to store active connections. Implement connection registration on new WebSocket connections. Add heartbeat/ping mechanism to detect stale connections. Create connection cleanup logic for disconnected clients.
+
+## 3. Create game session pairing and lobby system [done]
+### Dependencies: 10.2
+### Description: Implement the logic to pair waiting players into new game sessions
+### Details:
+Create GameSession struct containing two player IDs, game state, and session ID. Implement waiting queue for unpaired players. Create pairing logic: when second player joins, create new GameSession with both players. Design message protocol for lobby actions: join_lobby, leave_lobby, game_ready. Send game_start message to both players when paired with session ID and opponent info.
+
+## 4. Implement authoritative game state and move validation [done]
+### Dependencies: 10.3
+### Description: Create server-side game logic that maintains authoritative state and validates all moves
+### Details:
+Port Kseri game rules to server (or use shared crate). Store authoritative GameState per session including deck, hands, table cards, scores. Implement move validation: verify player owns the card, check if it's their turn, validate move legality. Process moves atomically: validate, apply state change, update scores. Implement special rules like Kseri scoring and card collection logic server-side.
+
+## 5. Build state synchronization and reconnection handling [done]
+### Dependencies: 10.4
+### Description: Create reliable state broadcast system and handle player disconnections gracefully
+### Details:
+Implement state diff calculation to minimize network traffic. Create reliable broadcast mechanism to send state updates to both players after each move. Add reconnection support: store session state for disconnected players with 60-second timeout. Implement reconnection protocol: client sends session_id and player_id to resume. Handle edge cases: player disconnecting during their turn, simultaneous disconnections, reconnection during state updates.
+

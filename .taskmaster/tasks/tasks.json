@@ -210,67 +210,67 @@
         "id": 4,
         "title": "Implement Kseri Game Rules Engine",
         "description": "Create the rule system that validates moves and handles card collection logic",
-        "details": "Implement move validation to check if a card can be played. Create collection logic: when played card rank matches top table card, player collects all table cards. Implement special Kseri scoring when collecting with a Jack (1 point). Handle end-of-hand dealing when both players run out of cards. Implement final scoring based on collected cards.",
-        "testStrategy": "Test all valid and invalid move scenarios. Verify collection happens only on rank match. Test Kseri scoring with Jacks. Test multiple rounds of dealing. Verify final score calculation accuracy.",
-        "priority": "high",
+        "status": "pending",
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Core game logic is partially implemented in systems/game_logic.rs, validation.rs, and turn_management.rs. Need to complete: initial dealing system (4 cards to each player, 4 to table, ensuring no Jacks on initial table), subsequent dealing when hands empty (4 cards each), complete final scoring with majority cards bonus (+3 points), and end-game logic to give remaining table cards to last capturer. The Card::kseri_value() method exists but scoring aggregation needs completion.",
+        "testStrategy": "Test all valid and invalid move scenarios. Verify collection happens only on rank match. Test Kseri scoring with Jacks. Test initial dealing ensures no Jacks on table. Test subsequent dealing triggers correctly. Verify final score calculation includes majority bonus. Test last capturer receives remaining cards.",
         "subtasks": [
           {
             "id": 1,
             "title": "Implement move validation logic",
             "description": "Create validation system to check if a card can be played based on Kseri rules",
+            "status": "pending",
             "dependencies": [],
             "details": "Implement functions to validate card plays including: checking if played card matches top card value, verifying Jack can capture any card, ensuring player has the card in hand, and preventing invalid moves. Include comprehensive error handling and clear validation messages.",
-            "status": "pending",
             "testStrategy": ""
           },
           {
             "id": 2,
             "title": "Create card collection mechanics",
             "description": "Implement the core mechanic for capturing cards from the table",
+            "status": "pending",
             "dependencies": [
               1
             ],
             "details": "Build the card capture logic including: capturing when values match, Jack captures all, collecting entire pile when capture occurs, adding captured cards to player's collection pile, clearing table after capture, and tracking which player made the last capture for end-game scoring.",
-            "status": "pending",
             "testStrategy": ""
           },
           {
             "id": 3,
             "title": "Handle special Kseri scoring rules",
             "description": "Implement the unique Kseri scoring system with special card values",
+            "status": "pending",
             "dependencies": [
               2
             ],
-            "details": "Create scoring functions for: regular Kseri (capturing single card) worth 10 points, double Kseri (capturing Jack with Jack) worth 20 points, special card values (Jack of Diamonds = 1, Two of Clubs = 2, Ten of Diamonds = 3, each Ace = 1), majority cards bonus (3 points), and tracking score throughout the game.",
-            "status": "pending",
+            "details": "Complete scoring implementation building on existing Card::kseri_value() method. Create scoring aggregation for: regular Kseri (capturing single card) worth 10 points, double Kseri (capturing Jack with Jack) worth 20 points, special card values already defined in kseri_value(), and tracking score throughout the game. Focus on aggregating scores since individual card values are already implemented.",
             "testStrategy": ""
           },
           {
             "id": 4,
-            "title": "Implement multi-round dealing logic",
-            "description": "Create the dealing system for Kseri's multiple distribution rounds",
+            "title": "Implement initial and subsequent dealing logic",
+            "description": "Create the complete dealing system for Kseri's card distribution",
+            "status": "pending",
             "dependencies": [
               1,
               2
             ],
-            "details": "Implement dealing mechanics including: initial deal of 4 cards to each player and 4 to table (ensuring no Jacks in initial table cards), subsequent deals of 4 cards to each player when hands empty, continuing until deck exhausted, handling special case where all initial table cards are Jacks, and managing deal order based on current dealer.",
-            "status": "pending",
+            "details": "Implement missing dealing mechanics: initial deal of 4 cards to each player and 4 to table (with logic to ensure no Jacks in initial table cards, reshuffling if necessary), subsequent deals of 4 cards to each player when both hands are empty, continuing until deck exhausted, and managing deal order based on current dealer. This is a key missing piece identified in the codebase.",
             "testStrategy": ""
           },
           {
             "id": 5,
-            "title": "Create the final scoring calculator",
-            "description": "Build comprehensive end-game scoring system combining all scoring rules",
+            "title": "Complete final scoring with majority bonus and end-game logic",
+            "description": "Finish the scoring system with majority cards bonus and last capturer rules",
+            "status": "pending",
             "dependencies": [
               3,
               4
             ],
-            "details": "Develop final scoring that: counts special card points for each player, awards majority cards bonus, gives remaining table cards to last capturer, calculates Kseri bonuses earned during play, determines winner based on total points, handles tie-breaking rules, and provides detailed score breakdown for players.",
-            "status": "pending",
+            "details": "Complete the final scoring implementation: add majority cards bonus (+3 points for having more than 26 cards), implement end-game rule where remaining table cards go to the player who made the last capture, integrate with existing Card::kseri_value() calculations, determine winner based on total points, handle tie-breaking rules, and provide detailed score breakdown. This addresses the incomplete scoring aggregation identified in the analysis.",
             "testStrategy": ""
           }
         ]
@@ -279,67 +279,67 @@
         "id": 5,
         "title": "Create Card Rendering and Visual Assets",
         "description": "Implement the visual representation of cards and game board using Bevy's rendering system",
-        "details": "Create or source SVG/sprite assets for all 52 cards plus card back. Implement Card entity with Sprite component in Bevy. Set up proper layering for overlapping cards. Create visual layouts for player hand (bottom), opponent hand (top showing backs), and table pile (center). Implement card sizing and positioning logic responsive to window size.",
-        "testStrategy": "Visual testing of all card renders. Verify cards display correctly at different resolutions. Test layering when cards overlap. Ensure card backs hide opponent's cards properly.",
-        "priority": "medium",
+        "status": "pending",
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "priority": "medium",
+        "details": "Card visual assets are FULLY IMPLEMENTED in assets/cards.rs with beautiful Greek-themed pixel art (64x96 cards, meander borders, deity artwork for face cards). Now need to integrate these assets with Bevy: load generated card images as textures, create card entity spawning system with sprite components, implement layout managers for hand positions/table spread/score piles, develop z-ordering system for proper card overlap (especially critical for table pile), and handle window resize with camera scaling. The pixel art generation is complete but the entire Bevy rendering integration remains to be implemented.",
+        "testStrategy": "Verify all generated card textures load correctly in Bevy. Test card entity spawning and sprite component attachment. Validate layout managers position cards correctly in all game areas. Test z-ordering with overlapping cards on table pile. Verify window resize maintains proper scaling and positions. Test card visibility at different resolutions.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Source or create card visual assets",
-            "description": "Gather or design visual assets for the card game including card backs, faces, suits, ranks, and any special card designs",
-            "dependencies": [],
-            "details": "Create or source high-quality card assets in appropriate formats (PNG/SVG). Include standard deck cards, card back design, and any special cards. Ensure assets are properly sized and optimized for game use. Consider creating multiple resolution versions for different screen sizes.",
+            "title": "Load generated card images as Bevy textures",
+            "description": "Integrate the existing Greek-themed pixel art assets from assets/cards.rs into Bevy's texture system",
             "status": "pending",
+            "dependencies": [],
+            "details": "The card assets are already generated in assets/cards.rs with 64x96 pixel art, meander borders, and deity artwork. Create a texture loading system that reads these generated images and converts them to Bevy texture handles. Implement texture atlas or individual texture management. Handle card back texture separately for opponent cards.",
             "testStrategy": ""
           },
           {
             "id": 2,
-            "title": "Implement card entity rendering with Bevy sprites",
+            "title": "Implement card entity spawning system with sprite components",
             "description": "Create the core card rendering system using Bevy's sprite system to display card entities in the game",
+            "status": "pending",
             "dependencies": [
               1
             ],
-            "details": "Set up Bevy sprite components for cards, implement texture loading and management, create card entity spawning system, handle card face/back switching, and ensure proper sprite scaling. Include component systems for card state management.",
-            "status": "pending",
+            "details": "Build card entity spawning system that creates Bevy entities with Sprite components using loaded textures. Implement card-to-sprite mapping based on Card struct (suit/rank). Handle face/back sprite switching for opponent cards. Set up proper sprite sizing (64x96) and initial transforms. Create component bundles for card entities.",
             "testStrategy": ""
           },
           {
             "id": 3,
-            "title": "Create responsive layout systems for screen areas",
-            "description": "Build flexible layout systems that adapt card positions and sizes to different screen areas and gameplay zones",
+            "title": "Create layout managers for hand, table, and score pile positions",
+            "description": "Build specialized layout systems for each game area that properly position and space cards",
+            "status": "pending",
             "dependencies": [
               2
             ],
-            "details": "Implement layout managers for different game areas (hand, table, deck, discard pile). Create algorithms for card spacing and positioning that adapt to available space. Handle card overlap in constrained areas. Ensure layouts work across different aspect ratios.",
-            "status": "pending",
+            "details": "Implement HandLayout for player (bottom) and opponent (top) hands with proper card spacing and overlap. Create TableLayout for center pile with spread/stacked arrangement. Build ScorePileLayout for collected cards display. Each layout should calculate positions based on card count and available screen space. Handle special cases like single card vs multiple cards.",
             "testStrategy": ""
           },
           {
             "id": 4,
-            "title": "Implement proper z-ordering for overlapping cards",
-            "description": "Develop a robust z-ordering system to handle card layering and ensure correct visual hierarchy",
+            "title": "Develop z-ordering system for card overlap on table pile",
+            "description": "Implement robust z-ordering to handle card layering, especially critical for the table pile where cards stack",
+            "status": "pending",
             "dependencies": [
               2,
               3
             ],
-            "details": "Create z-order management system using Bevy's transform components. Implement dynamic z-ordering based on card state (selected, hovered, in-hand vs on-table). Handle edge cases like dragging cards and animation transitions. Ensure consistent rendering order.",
-            "status": "pending",
+            "details": "Create z-order management using Bevy's Transform z-coordinate. Implement dynamic z-ordering where newer cards on table pile have higher z-values. Handle special cases: selected card brings to front, animation transitions maintain proper order, hand cards overlap correctly. Table pile must show all cards slightly offset for visibility.",
             "testStrategy": ""
           },
           {
             "id": 5,
-            "title": "Handle window resize events and responsive scaling",
-            "description": "Implement system to detect and respond to window resize events, updating all layouts and card sizes accordingly",
+            "title": "Implement window resize handling with camera scaling",
+            "description": "Create responsive system that handles window resizes while maintaining card visibility and proportions",
+            "status": "pending",
             "dependencies": [
               3,
               4
             ],
-            "details": "Set up window resize event listeners in Bevy. Implement scaling calculations to maintain aspect ratios. Update all layout systems on resize. Handle edge cases like minimum window sizes. Test across various resolutions and window configurations.",
-            "status": "pending",
+            "details": "Set up Bevy camera with proper projection for card game view. Implement window resize event handler that recalculates camera scale. Update all layout managers on resize to reposition cards. Maintain aspect ratio of 64x96 cards. Define minimum/maximum zoom levels. Ensure all game areas remain visible at any window size.",
             "testStrategy": ""
           }
         ]
@@ -375,14 +375,69 @@
         "id": 8,
         "title": "Design Game UI and HUD Elements",
         "description": "Create the user interface elements for game information display",
-        "details": "Implement UI components using Bevy UI or egui: player name displays (Arkid/Sofia), score counters for both players, cards remaining in deck counter, current turn indicator with visual emphasis, game status messages area. Position UI elements to not obstruct gameplay. Use clear, readable fonts and high contrast colors.",
-        "testStrategy": "Test UI scaling at different resolutions. Verify all game information is clearly visible. Test dynamic updates of scores and counters. Ensure UI doesn't overlap with game area.",
-        "priority": "medium",
+        "status": "pending",
         "dependencies": [
           1
         ],
-        "status": "pending",
-        "subtasks": []
+        "priority": "medium",
+        "details": "Implement UI components using Bevy's built-in UI system (Text2d already in use). Greek-themed pixel art UI assets are FULLY IMPLEMENTED in assets/ui.rs including: score frames, buttons with hover/pressed states, turn indicator, deck counter sprite, Kseri banner, table texture. Required implementation: 1) Set up Bevy UI system with proper hierarchy and layout, 2) Spawn UI entities for player names (Arkid/Sofia) with Text2d components, 3) Create score displays that dynamically update from Score component data, 4) Implement turn indicator positioning that moves based on current_player, 5) Add deck counter showing remaining_cards from Deck component, 6) Create game status message system for events (Kseri!, Round End, Game Over), 7) Position all UI elements to avoid game area overlap. Use existing sprite assets from assets/ui.rs module.",
+        "testStrategy": "Test UI component spawning and positioning at different resolutions. Verify score displays update correctly when Score components change. Test turn indicator movement between players. Verify deck counter decrements as cards are drawn. Test game status messages appear/fade correctly. Ensure all text is readable against backgrounds. Verify UI doesn't obstruct card play area.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up Bevy UI entity hierarchy",
+            "description": "Create the base UI entity structure with proper parent-child relationships for layout management",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement player name displays",
+            "description": "Spawn Text2d entities for 'Arkid' and 'Sofia' player names positioned near their respective score areas",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create dynamic score displays",
+            "description": "Implement score UI that reads from Score components and updates Text2d when scores change",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Add turn indicator system",
+            "description": "Spawn turn indicator sprite from assets/ui.rs and implement system to reposition based on current_player",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement deck counter display",
+            "description": "Create deck counter using sprite asset that shows remaining card count from Deck component",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Build game status message system",
+            "description": "Create message display for game events (Kseri!, Round End, etc.) with fade-in/out animations",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          }
+        ]
       },
       {
         "id": 9,

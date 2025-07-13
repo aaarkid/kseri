@@ -1,0 +1,49 @@
+# Task ID: 8
+# Title: Design Game UI and HUD Elements
+# Status: pending
+# Dependencies: 1
+# Priority: medium
+# Description: Create the user interface elements for game information display
+# Details:
+Implement UI components using Bevy's built-in UI system (Text2d already in use). Greek-themed pixel art UI assets are FULLY IMPLEMENTED in assets/ui.rs including: score frames, buttons with hover/pressed states, turn indicator, deck counter sprite, Kseri banner, table texture. Required implementation: 1) Set up Bevy UI system with proper hierarchy and layout, 2) Spawn UI entities for player names (Arkid/Sofia) with Text2d components, 3) Create score displays that dynamically update from Score component data, 4) Implement turn indicator positioning that moves based on current_player, 5) Add deck counter showing remaining_cards from Deck component, 6) Create game status message system for events (Kseri!, Round End, Game Over), 7) Position all UI elements to avoid game area overlap. Use existing sprite assets from assets/ui.rs module.
+
+# Test Strategy:
+Test UI component spawning and positioning at different resolutions. Verify score displays update correctly when Score components change. Test turn indicator movement between players. Verify deck counter decrements as cards are drawn. Test game status messages appear/fade correctly. Ensure all text is readable against backgrounds. Verify UI doesn't obstruct card play area.
+
+# Subtasks:
+## 1. Set up Bevy UI entity hierarchy [pending]
+### Dependencies: None
+### Description: Create the base UI entity structure with proper parent-child relationships for layout management
+### Details:
+
+
+## 2. Implement player name displays [pending]
+### Dependencies: None
+### Description: Spawn Text2d entities for 'Arkid' and 'Sofia' player names positioned near their respective score areas
+### Details:
+
+
+## 3. Create dynamic score displays [pending]
+### Dependencies: None
+### Description: Implement score UI that reads from Score components and updates Text2d when scores change
+### Details:
+
+
+## 4. Add turn indicator system [pending]
+### Dependencies: None
+### Description: Spawn turn indicator sprite from assets/ui.rs and implement system to reposition based on current_player
+### Details:
+
+
+## 5. Implement deck counter display [pending]
+### Dependencies: None
+### Description: Create deck counter using sprite asset that shows remaining card count from Deck component
+### Details:
+
+
+## 6. Build game status message system [pending]
+### Dependencies: None
+### Description: Create message display for game events (Kseri!, Round End, etc.) with fade-in/out animations
+### Details:
+
+

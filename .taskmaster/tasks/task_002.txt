@@ -1,0 +1,37 @@
+# Task ID: 2
+# Title: Implement Card Data Structures and Deck Logic
+# Status: done
+# Dependencies: 1
+# Priority: high
+# Description: Create the core game data structures for cards, deck, and basic card operations
+# Details:
+Define Card struct with suit and rank enums. Implement a Deck struct that holds 52 cards with methods for shuffling (using rand crate), dealing cards, and checking if empty. Create a Hand struct to represent player hands with capacity for 4 cards. Implement methods for adding/removing cards from hands. Define table pile structure to hold face-up cards.
+
+# Test Strategy:
+Unit tests for deck initialization ensuring 52 unique cards. Test shuffle randomness. Test deal operations maintain deck integrity. Verify hand capacity limits. Test table pile operations for adding and retrieving cards.
+
+# Subtasks:
+## 1. Define card enums and structs [done]
+### Dependencies: None
+### Description: Create the foundational data structures for cards including rank and suit enums, and the Card struct
+### Details:
+Define Suit enum (Hearts, Diamonds, Clubs, Spades), Rank enum (Ace through King with numeric values), and Card struct containing suit and rank. Implement Display trait for pretty printing cards. Add methods for card comparison and value calculation.
+
+## 2. Implement deck with initialization and shuffling [done]
+### Dependencies: 2.1
+### Description: Create a Deck struct that holds a collection of cards with methods for creation and shuffling
+### Details:
+Implement Deck struct using Vec<Card>. Create new() method that generates all 52 cards. Add shuffle() method using rand crate and Fisher-Yates algorithm. Include draw() method that returns Option<Card> to handle empty deck case. Ensure proper ownership transfer when drawing cards.
+
+## 3. Create hand management logic with capacity constraints [done]
+### Dependencies: 2.1
+### Description: Implement a Hand struct that manages a player's cards with a maximum capacity
+### Details:
+Create Hand struct with Vec<Card> and max_capacity field. Implement add_card() method that returns Result to handle capacity overflow. Add remove_card() method for playing cards. Include methods for sorting, searching, and displaying the hand. Ensure proper borrowing patterns for card access.
+
+## 4. Implement the table pile structure [done]
+### Dependencies: 2.1
+### Description: Create a structure to represent cards played on the table
+### Details:
+Implement TablePile struct using Vec<Card> to store played cards. Add play_card() method to add cards to the pile. Include peek_top() method to view the last played card without removing it. Add clear() method to reset the pile. Consider implementing Iterator trait for pile traversal.
+

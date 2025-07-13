@@ -1,0 +1,11 @@
+# Task ID: 15
+# Title: Performance Testing and Optimization
+# Status: pending
+# Dependencies: 14
+# Priority: medium
+# Description: Optimize the game for smooth performance and low latency gameplay
+# Details:
+Profile WASM performance using browser dev tools. Optimize render calls in Bevy for 60fps gameplay. Minimize WebSocket message sizes using efficient serialization. Implement sprite batching for cards. Add performance metrics overlay for debugging. Optimize asset loading with texture atlases. Target <100ms latency for move registration.
+
+# Test Strategy:
+Benchmark frame rates during gameplay. Measure network message sizes and latency. Test on low-end devices. Verify no memory leaks during extended play. Profile and eliminate performance bottlenecks.
