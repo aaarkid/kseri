@@ -1,19 +1,9 @@
 #!/bin/bash
-set -e
+# Build script for WASM
 
-echo "Building WASM target..."
+echo "Building Kseri for WASM..."
 
-# Build the WASM binary
-cargo build --target wasm32-unknown-unknown --release
+# Build the WASM package
+wasm-pack build --target web --no-typescript
 
-# Create web directory if it doesn't exist
-mkdir -p web
-
-# Run wasm-bindgen to generate JS bindings
-wasm-bindgen --out-dir web \
-    --target web \
-    --no-typescript \
-    target/wasm32-unknown-unknown/release/kseri.wasm
-
-echo "WASM build complete! Files are in the 'web' directory."
-echo "To serve locally, run: python3 serve.py"
+echo "Build complete! Run 'npm run serve' to start the development server."

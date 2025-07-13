@@ -3,9 +3,9 @@ module.exports = {
     name: 'kseri-dev-server',
     script: 'serve.py',
     interpreter: 'python3',
-    cwd: '/home/arkid/DEV/kseri',
+    cwd: '/home/arkid/DEV/kseri-card-rendering',
     env: {
-      PORT: 8000
+      PORT: 8001
     },
     watch: false,
     ignore_watch: ['node_modules', 'target', '.git'],

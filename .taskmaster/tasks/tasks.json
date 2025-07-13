@@ -279,7 +279,7 @@
         "id": 5,
         "title": "Create Card Rendering and Visual Assets",
         "description": "Implement the visual representation of cards and game board using Bevy's rendering system",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           1
         ],
@@ -291,7 +291,7 @@
             "id": 1,
             "title": "Load generated card images as Bevy textures",
             "description": "Integrate the existing Greek-themed pixel art assets from assets/cards.rs into Bevy's texture system",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "The card assets are already generated in assets/cards.rs with 64x96 pixel art, meander borders, and deity artwork. Create a texture loading system that reads these generated images and converts them to Bevy texture handles. Implement texture atlas or individual texture management. Handle card back texture separately for opponent cards.",
             "testStrategy": ""
@@ -300,46 +300,46 @@
             "id": 2,
             "title": "Implement card entity spawning system with sprite components",
             "description": "Create the core card rendering system using Bevy's sprite system to display card entities in the game",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               1
             ],
-            "details": "Build card entity spawning system that creates Bevy entities with Sprite components using loaded textures. Implement card-to-sprite mapping based on Card struct (suit/rank). Handle face/back sprite switching for opponent cards. Set up proper sprite sizing (64x96) and initial transforms. Create component bundles for card entities.",
+            "details": "Build card entity spawning system that creates Bevy entities with Sprite components using loaded textures. Implement card-to-sprite mapping based on Card struct (suit/rank). Handle face/back sprite switching for opponent cards. Set up proper sprite sizing (64x96) and initial transforms. Create component bundles for card entities.\n<info added on 2025-07-13T12:48:59.851Z>\nI'll help you update the subtask details with the completion information. Let me create a task update that captures the work done on the card entity spawning system.Let me check the current state of the task first to understand what needs to be updated.Let me find the correct format for the subtask update by checking the task structure more carefully.Let me check the task files directory:Let me check task 5 to see the subtask format:Now let me check what taskmaster expects as the update format:Based on the context provided, I understand that I need to update subtask 5.2 with completion details. The update should capture that the card entity spawning system has been completed with the following key changes:\n- Updated to use single entities with sprite components (not child entities)\n- The CardBundle struct is properly configured\n- The spawn_card_visuals system correctly handles entities\n\nHere's the new text content to append to the subtask's details:\n\nCompleted implementation with refactoring to single-entity architecture. The CardBundle struct now includes Sprite, Handle<Image>, Transform, GlobalTransform, Visibility, and ViewVisibility components for complete rendering setup. Refactored from child entity approach to single entity with sprite component for better performance and simpler hierarchy. The spawn_card_visuals system successfully queries for Card entities without sprites and attaches appropriate textures based on card visibility state (face or back). System properly handles texture mapping through card_textures resource lookup.\n</info added on 2025-07-13T12:48:59.851Z>",
             "testStrategy": ""
           },
           {
             "id": 3,
             "title": "Create layout managers for hand, table, and score pile positions",
             "description": "Build specialized layout systems for each game area that properly position and space cards",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               2
             ],
-            "details": "Implement HandLayout for player (bottom) and opponent (top) hands with proper card spacing and overlap. Create TableLayout for center pile with spread/stacked arrangement. Build ScorePileLayout for collected cards display. Each layout should calculate positions based on card count and available screen space. Handle special cases like single card vs multiple cards.",
+            "details": "Implement HandLayout for player (bottom) and opponent (top) hands with proper card spacing and overlap. Create TableLayout for center pile with spread/stacked arrangement. Build ScorePileLayout for collected cards display. Each layout should calculate positions based on card count and available screen space. Handle special cases like single card vs multiple cards.\n<info added on 2025-07-13T12:49:40.989Z>\nLayout system successfully implemented. Created comprehensive layout.rs module with well-organized constants for card dimensions (64x96), screen positions for all game areas, consistent spacing values, and properly defined z-layer hierarchy. Implemented LocationCardCounts resource to efficiently track card counts at each location (deck, hands, table, score piles). Developed calculate_card_transform function as the central layout engine, handling position calculations for all card locations including deck stacking with slight offsets, hand fanning with proper overlap, table cascading for visibility, and score pile stacking. Added update_location_counts system to maintain accurate card counts per location and update_card_layering system to ensure proper z-ordering based on card indices and locations.\n</info added on 2025-07-13T12:49:40.989Z>",
             "testStrategy": ""
           },
           {
             "id": 4,
             "title": "Develop z-ordering system for card overlap on table pile",
             "description": "Implement robust z-ordering to handle card layering, especially critical for the table pile where cards stack",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               2,
               3
             ],
-            "details": "Create z-order management using Bevy's Transform z-coordinate. Implement dynamic z-ordering where newer cards on table pile have higher z-values. Handle special cases: selected card brings to front, animation transitions maintain proper order, hand cards overlap correctly. Table pile must show all cards slightly offset for visibility.",
+            "details": "Create z-order management using Bevy's Transform z-coordinate. Implement dynamic z-ordering where newer cards on table pile have higher z-values. Handle special cases: selected card brings to front, animation transitions maintain proper order, hand cards overlap correctly. Table pile must show all cards slightly offset for visibility.\n<info added on 2025-07-13T12:50:23.026Z>\nZ-ordering system has been successfully implemented in src/systems/layout.rs with a comprehensive layering structure. The system uses Transform.translation.z for card layering with clearly defined constants: Z_LAYER_TABLE (0.0) for table base, Z_LAYER_DECK (10.0) for deck cards, Z_LAYER_SCORE (50.0) for score piles, Z_LAYER_HAND (100.0) for hand cards, and Z_LAYER_SELECTED (200.0) for selected cards. The calculate_card_transform function intelligently assigns z-values based on card location and index within that location. Table cards implement a cascading effect where each subsequent card receives a higher z-value (base + index * 0.1), ensuring newer cards appear on top while maintaining visibility of the pile. The update_card_layering system continuously maintains proper ordering as cards transition between locations, automatically adjusting z-values during animations and state changes. This implementation ensures smooth visual transitions and proper card visibility throughout all game states.\n</info added on 2025-07-13T12:50:23.026Z>",
             "testStrategy": ""
           },
           {
             "id": 5,
             "title": "Implement window resize handling with camera scaling",
             "description": "Create responsive system that handles window resizes while maintaining card visibility and proportions",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               3,
               4
             ],
-            "details": "Set up Bevy camera with proper projection for card game view. Implement window resize event handler that recalculates camera scale. Update all layout managers on resize to reposition cards. Maintain aspect ratio of 64x96 cards. Define minimum/maximum zoom levels. Ensure all game areas remain visible at any window size.",
+            "details": "Set up Bevy camera with proper projection for card game view. Implement window resize event handler that recalculates camera scale. Update all layout managers on resize to reposition cards. Maintain aspect ratio of 64x96 cards. Define minimum/maximum zoom levels. Ensure all game areas remain visible at any window size.\n<info added on 2025-07-13T12:51:03.772Z>\nWindow resize handling is fully implemented in layout.rs. Created CameraScale resource to track scaling. The handle_window_resize system listens for WindowResized events and calculates appropriate scale based on MIN_WINDOW_WIDTH (600) and MIN_WINDOW_HEIGHT (400). Camera transform is scaled inversely to maintain proper view. Also implemented maintain_responsive_layout system to adjust UI text positioning based on camera scale. All systems are integrated into CardRenderingPlugin in main.rs.\n</info added on 2025-07-13T12:51:03.772Z>",
             "testStrategy": ""
           }
         ]
@@ -680,7 +680,7 @@
     ],
     "metadata": {
       "created": "2025-07-13T04:39:30.570Z",
-      "updated": "2025-07-13T12:43:56.144Z",
+      "updated": "2025-07-13T13:15:16.716Z",
       "description": "Tasks for master context"
     }
   }
