@@ -348,14 +348,70 @@
         "id": 6,
         "title": "Implement Card Animation System",
         "description": "Create smooth animations for card movements and game actions",
-        "details": "Use Bevy's animation system to create tweened movements for: dealing cards from deck to hands/table, playing cards from hand to table, collecting cards from table, shuffling animation. Implement easing functions for natural movement. Add particle effects or highlights for Kseri moments. Create hover and selection states for interactive cards.",
-        "testStrategy": "Test animation smoothness at different frame rates. Verify animations complete properly. Test interruption handling if new animation starts before previous finishes. Check visual feedback clarity.",
-        "priority": "medium",
+        "status": "pending",
         "dependencies": [
           5
         ],
-        "status": "pending",
-        "subtasks": []
+        "priority": "medium",
+        "details": "Develop in the '../kseri-animations' worktree on branch 'feature/card-animations'. Use Bevy's animation system to create polished, smooth animations that enhance the visual demo experience. Key animations: dealing cards with arc motion for realistic card distribution, playing cards to table with slight bounce effect, collection animations with swooping motion to score piles, special Kseri capture effects with glow/particles. Implement easing functions for natural movement. Create hover and selection states for interactive cards. Focus on creating a visually appealing demo that showcases the game's polish.",
+        "testStrategy": "Test animation smoothness at different frame rates. Verify animations complete properly. Test interruption handling if new animation starts before previous finishes. Check visual feedback clarity. Ensure all animations enhance rather than distract from gameplay.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Core Animation System with Tweening",
+            "description": "Implement the foundational animation system using Bevy's built-in animation capabilities with custom tweening functions",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create a flexible animation component system that can handle position, rotation, and scale animations. Implement common easing functions (linear, ease-in-out, cubic, bounce). Design the animation system to work with Bevy's ECS architecture, creating Animation components that can be attached to card entities. Include duration, delay, and loop options for animations. Develop in '../kseri-animations' worktree.",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Card Dealing Animations",
+            "description": "Create smooth animations for dealing cards from the deck to players' hands and the table",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Animate cards moving from deck position with realistic arc motion paths. Add slight rotation during movement for realistic card motion. Implement staggered dealing with configurable delays between cards. Create different arc paths for dealing to different player positions for visual variety. Handle initial deal (4 cards each) and subsequent deals differently. Focus on smooth, polished motion that enhances the demo experience.",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Add Play-to-Table Animations",
+            "description": "Implement animations for when players play cards from their hand to the table",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Create smooth transition from hand position to table center with appropriate scaling. Add hover state animations for card selection feedback. Implement 'flip' animation if cards are played face-down initially. Include subtle bounce effect when card lands on table for satisfying game feel. Ensure animations work correctly for both player and opponent card plays. Polish the bounce timing for maximum visual appeal.",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create Collection Animations with Special Effects",
+            "description": "Implement card collection animations with special visual effects for Kseri moments",
+            "status": "pending",
+            "dependencies": [
+              1,
+              3
+            ],
+            "details": "Animate collected cards with swooping motion from table to player's score pile. Add prominent particle effects and glow for Kseri collections (collecting with Jack) to celebrate special captures. Implement card stacking animation for collection piles. Create visual feedback for point-scoring cards (10 of diamonds, 2 of clubs). Add celebratory effects for significant collections. Focus on making Kseri moments feel special and rewarding.",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Shuffle Visualization and Animation Queuing",
+            "description": "Create shuffle animations and handle animation interruptions/queuing system",
+            "status": "pending",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Design visually appealing shuffle animation with cards moving in circular patterns. Implement animation queue system to handle overlapping animation requests. Create priority system for animations (gameplay animations take precedence). Handle animation interruptions gracefully with smooth transitions. Add callbacks for animation completion to trigger game logic. Ensure animation state is properly cleaned up to prevent memory leaks. Polish all animations for demo-ready quality.",
+            "testStrategy": ""
+          }
+        ]
       },
       {
         "id": 7,
@@ -667,15 +723,69 @@
         "id": 17,
         "title": "Upgrade UI System to Pixel Art Sprites",
         "description": "Replace all Text2d UI elements with proper Sprite components using the Greek-themed pixel art assets, creating a cohesive visual aesthetic that matches the card art style",
-        "details": "This task involves a complete overhaul of the current text-based UI to use the pixel art sprites generated in Task #16. Implementation steps: 1) **Score Display Upgrade**: Replace the current Text2d score displays with SpriteBundle components using the score frame sprites from assets/ui.rs. Position the Greek-bordered score frames at the top corners of the screen, with player names rendered inside using the pixel font. Implement a system to dynamically update the score numbers within the frames. 2) **Turn Indicator Sprite**: Replace the text-based turn indicator with the arrow sprite asset, implementing smooth rotation or translation animations to point at the active player. Use Transform components to animate the arrow's position/rotation. 3) **Deck Counter Visual**: Replace the deck count text with the deck counter sprite frame that includes a card icon. Overlay the remaining card count using the pixel font inside the frame. Position near the deck location. 4) **Kseri Banner Implementation**: Create a system to spawn the Kseri banner sprite when a Kseri capture occurs, with fade-in/fade-out animations using Bevy's color components. The banner should appear prominently in the center of the screen for 2-3 seconds. 5) **Button Sprites Integration**: If any UI buttons exist or are added (like 'Play Again'), replace them with the button sprites that include hover and pressed states. Implement interaction systems to swap textures based on mouse hover/click events. 6) **Sprite Loading System**: Create a centralized UI sprite loading system that loads all UI textures at startup and stores handles in a resource for efficient access. Use texture atlases where appropriate to minimize draw calls. 7) **Layout Adjustments**: Ensure all sprite-based UI elements are properly positioned using Bevy's Transform2D system, maintaining responsive layouts that work at different resolutions while preserving pixel-perfect rendering.",
-        "testStrategy": "1) Verify all Text2d elements have been successfully replaced with sprite equivalents by searching the codebase for any remaining Text2d components in UI code. 2) Test score frame updates by triggering score changes and confirming the numbers update correctly within the sprite frames. 3) Validate turn indicator animation by switching between players and observing smooth arrow movement/rotation. 4) Test Kseri banner by triggering Kseri captures and verifying the banner appears with proper fade animations and timing. 5) Check deck counter updates as cards are dealt, ensuring the count decrements properly within the sprite frame. 6) Test all UI elements at different window sizes to ensure sprites scale appropriately without distortion. 7) Profile render performance to ensure sprite batching is working and draw calls are minimized. 8) Verify pixel-perfect rendering by checking that sprites appear crisp without blurring at 1x and 2x scale factors. 9) Test memory usage to ensure all UI textures are properly loaded once and reused. 10) Validate visual consistency by comparing all UI elements against the Greek pixel art aesthetic established in the card designs.",
         "status": "pending",
         "dependencies": [
           5,
           16
         ],
         "priority": "medium",
-        "subtasks": []
+        "details": "This task involves a complete overhaul of the current text-based UI to use the pixel art sprites generated in Task #16. **Development occurs in the '../kseri-ui-sprites' worktree on branch 'feature/ui-pixel-art'** to maintain visual consistency across the game. Implementation steps: 1) **Score Display Upgrade**: Replace the current Text2d score displays with SpriteBundle components using the score frame sprites from assets/ui.rs. Position the Greek-bordered score frames at the top corners of the screen, with player names rendered inside using the pixel font. Implement a system to dynamically update the score numbers within the frames. 2) **Turn Indicator Sprite**: Replace the text-based turn indicator with the arrow sprite asset, implementing smooth rotation or translation animations to point at the active player. Use Transform components to animate the arrow's position/rotation. 3) **Deck Counter Visual**: Replace the deck count text with the deck counter sprite frame that includes a card icon. Overlay the remaining card count using the pixel font inside the frame. Position near the deck location. 4) **Kseri Banner Implementation**: Create a system to spawn the Kseri banner sprite when a Kseri capture occurs, with fade-in/fade-out animations using Bevy's color components. The banner should appear prominently in the center of the screen for 2-3 seconds. 5) **Button Sprites Integration**: If any UI buttons exist or are added (like 'Play Again'), replace them with the button sprites that include hover and pressed states. Implement interaction systems to swap textures based on mouse hover/click events. 6) **Sprite Loading System**: Create a centralized UI sprite loading system that loads all UI textures at startup and stores handles in a resource for efficient access. Use texture atlases where appropriate to minimize draw calls. 7) **Layout Adjustments**: Ensure all sprite-based UI elements are properly positioned using Bevy's Transform2D system, maintaining responsive layouts that work at different resolutions while preserving pixel-perfect rendering. **Priority focus areas**: score frames with pixel font numbers, animated turn indicator arrow, deck counter sprite, and the celebratory Kseri banner to complete the cohesive Greek aesthetic for the visual demo.",
+        "testStrategy": "1) Verify all Text2d elements have been successfully replaced with sprite equivalents by searching the codebase for any remaining Text2d components in UI code. 2) Test score frame updates by triggering score changes and confirming the numbers update correctly within the sprite frames. 3) Validate turn indicator animation by switching between players and observing smooth arrow movement/rotation. 4) Test Kseri banner by triggering Kseri captures and verifying the banner appears with proper fade animations and timing. 5) Check deck counter updates as cards are dealt, ensuring the count decrements properly within the sprite frame. 6) Test all UI elements at different window sizes to ensure sprites scale appropriately without distortion. 7) Profile render performance to ensure sprite batching is working and draw calls are minimized. 8) Verify pixel-perfect rendering by checking that sprites appear crisp without blurring at 1x and 2x scale factors. 9) Test memory usage to ensure all UI textures are properly loaded once and reused. 10) Validate visual consistency by comparing all UI elements against the Greek pixel art aesthetic established in the card designs. 11) Test the complete visual demo flow ensuring all priority UI elements (scores, turn indicator, deck counter, Kseri banner) work harmoniously together.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create UI Sprite Loading System",
+            "description": "Implement a centralized resource management system for loading and storing all UI sprite handles",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Working in '../kseri-ui-sprites' worktree: Create a UIAssets resource struct that loads all UI textures from assets/ui.rs at startup. Store texture handles for score frames, buttons (normal/hover/pressed states), turn indicator arrow, deck counter, Kseri banner, and table texture. Implement this in a new ui/sprite_loader.rs module. Use Bevy's asset server to load textures and store them in a resource for efficient runtime access. Consider using texture atlases for button states to minimize draw calls. This forms the foundation for the visual consistency upgrade.",
+            "testStrategy": "Verify all UI textures load successfully at startup without errors. Check that texture handles are properly stored and accessible from other systems. Test hot-reloading of UI assets during development. Ensure no duplicate texture loading occurs."
+          },
+          {
+            "id": 2,
+            "title": "Replace Score Display with Sprite Frames",
+            "description": "Convert Text2d score displays to use Greek-bordered sprite frames with dynamic score rendering",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Priority implementation: Remove existing Text2d score displays from the UI system. Spawn SpriteBundle entities using the score frame sprites loaded in the UIAssets resource. Position frames at top-left and top-right corners (e.g., Vec3::new(-300.0, 250.0, 1.0) for player 1). Create a score rendering system that draws player names and scores inside the frames using a pixel-perfect font. Implement dynamic text positioning to center numbers within the ornate Greek borders. Add component markers like ScoreDisplay { player_id: u8 } to track which frame belongs to which player. Ensure the pixel font numbers maintain the Greek aesthetic.",
+            "testStrategy": "Verify Text2d score elements are completely removed from codebase. Test score updates trigger proper re-rendering within sprite frames. Check text alignment stays centered at different score values (0-999). Validate frames maintain pixel-perfect rendering at different resolutions."
+          },
+          {
+            "id": 3,
+            "title": "Implement Turn Indicator Animation System",
+            "description": "Replace text-based turn indicator with animated arrow sprite that points to the active player",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Priority implementation: Remove any Text2d-based turn indicator. Spawn a SpriteBundle with the arrow sprite from UIAssets. Create a TurnIndicatorSystem that reads the current player from GameState and updates the arrow's Transform. Implement smooth interpolation using Bevy's Transform and Timer components to animate rotation or translation. For rotation: use Transform::rotation to point at player positions. For translation: move the arrow between predefined positions near each player's area. Add easing functions (e.g., cubic ease-in-out) for natural movement over 0.5-1.0 seconds. This is key for the visual demo's polish.",
+            "testStrategy": "Test arrow correctly points to or moves near the active player. Verify smooth animation without jitter at 60fps and 30fps. Check turn changes trigger immediate animation start. Validate arrow remains visible and properly positioned during all game states."
+          },
+          {
+            "id": 4,
+            "title": "Create Kseri Banner Animation System",
+            "description": "Implement the celebratory Kseri banner with fade animations when captures occur",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Priority implementation for visual demo: Create a KseriBannerSystem that listens for Kseri capture events from the game logic. When triggered, spawn a SpriteBundle with the Kseri banner texture at screen center (Vec3::new(0.0, 0.0, 10.0) for high z-order). Implement fade-in animation over 0.3 seconds by interpolating the Sprite's color alpha from 0.0 to 1.0. Display for 2-3 seconds, then fade-out over 0.5 seconds. Use Bevy's Timer component to control animation phases. Add a slight scale pulse effect (1.0 to 1.1 back to 1.0) during display for extra emphasis. Ensure banner entity is properly despawned after animation completes. This celebratory element is crucial for the Greek-themed aesthetic.",
+            "testStrategy": "Trigger multiple Kseri captures and verify banner appears each time. Test fade-in/out timing matches specifications. Check banner appears above all other UI elements. Verify proper cleanup with no memory leaks from repeated spawning."
+          },
+          {
+            "id": 5,
+            "title": "Upgrade Deck Counter to Sprite Display",
+            "description": "Replace text deck counter with sprite frame showing remaining card count",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Priority implementation: Remove Text2d deck counter implementation. Spawn SpriteBundle with deck counter frame sprite near the deck position (e.g., Vec3::new(0.0, -200.0, 2.0)). Create a DeckCounterSystem that queries the Deck component for remaining cards and renders the count inside the sprite frame. Use the same pixel font system as score displays for consistent styling. Position the number to align with the card icon in the frame design. Update whenever cards are drawn from deck. Consider adding a subtle shake animation when deck is nearly empty (< 10 cards). This completes the core UI sprite upgrades for the visual demo.",
+            "testStrategy": "Verify deck counter updates immediately when cards are drawn. Test number rendering stays within frame bounds for all values (0-52). Check positioning remains consistent across different screen sizes. Validate low-card warning animation triggers correctly."
+          }
+        ]
       }
     ],
     "metadata": {

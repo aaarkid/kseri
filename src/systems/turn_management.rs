@@ -5,7 +5,7 @@ use crate::components::*;
 pub fn turn_start_system(
     mut turn_manager: ResMut<TurnManager>,
     playing_phase: Res<State<PlayingPhase>>,
-    mut selectable_query: Query<&mut Selectable, With<CardEntity>>,
+    mut selectable_query: Query<&mut Selectable>,
 ) {
     if *playing_phase.get() != PlayingPhase::PlayerTurn {
         return;
@@ -34,8 +34,8 @@ pub fn play_card_system(
     mut next_phase: ResMut<NextState<PlayingPhase>>,
     mut hand_query: Query<(&Player, &mut Hand)>,
     mut table_query: Query<&mut TablePile, With<TableComponent>>,
-    mut card_entity_query: Query<(&mut CardEntity, &Transform)>,
-    table_card_query: Query<&CardEntity>,
+    mut card_entity_query: Query<&mut CardEntity>,
+    card_query: Query<&Card>,
 ) {
     for event in action_events.read() {
         if event.player_id != turn_manager.current_player {
@@ -45,120 +45,123 @@ pub fn play_card_system(
         
         match &event.action {
             PlayerAction::PlayCard(entity) => {
-                if let Ok((card_entity, _transform)) = card_entity_query.get(*entity) {
-                    let card = card_entity.card;
-                    
-                    // Remove from player's hand
-                    let mut card_removed = false;
-                    for (player, mut hand) in hand_query.iter_mut() {
-                        if player.id == event.player_id {
-                            if let Ok(_) = hand.remove_card(*entity) {
-                                card_removed = true;
-                                break;
-                            }
+                // First, get the card info
+                let card = if let Ok(card) = card_query.get(*entity) {
+                    *card
+                } else {
+                    continue;
+                };
+                
+                // Remove from player's hand
+                let mut card_removed = false;
+                for (player, mut hand) in hand_query.iter_mut() {
+                    if player.id == event.player_id {
+                        if let Ok(_) = hand.remove_card(*entity) {
+                            card_removed = true;
+                            break;
                         }
                     }
-                    
-                    if !card_removed {
-                        // warn!("Failed to remove card from player's hand");
-                        continue;
-                    }
-                    
-                    // Check for capture
-                    if let Ok(mut table) = table_query.single_mut() {
-                        // Check if we can capture any cards on the table
-                        let mut can_capture = false;
-                        if !table.cards.is_empty() {
-                            for &table_entity in &table.cards {
-                                if let Ok(table_card_entity) = table_card_query.get(table_entity) {
-                                    if card.can_capture(&table_card_entity.card) {
-                                        can_capture = true;
-                                        break;
-                                    }
+                }
+                
+                if !card_removed {
+                    // warn!("Failed to remove card from player's hand");
+                    continue;
+                }
+                
+                // Check for capture
+                if let Ok(mut table) = table_query.single_mut() {
+                    // Check if we can capture any cards on the table
+                    let mut can_capture = false;
+                    if !table.cards.is_empty() {
+                        for &table_entity in &table.cards {
+                            if let Ok(table_card) = card_query.get(table_entity) {
+                                if card.can_capture(table_card) {
+                                    can_capture = true;
+                                    break;
                                 }
                             }
                         }
+                    }
+                    
+                    if can_capture {
+                        // Determine what cards are captured
+                        let mut captured_entities;
+                        let mut captured_cards = Vec::new();
+                        let was_single_card = table.cards.len() == 1;
                         
-                        if can_capture {
-                            // Determine what cards are captured
-                            let mut captured_entities;
-                            let mut captured_cards = Vec::new();
-                            let was_single_card = table.cards.len() == 1;
-                            
-                            if card.rank == Rank::Jack {
-                                // Jack captures all
-                                captured_entities = table.take_all();
-                                // Convert entities to cards for the event
-                                for entity in &captured_entities {
-                                    if let Ok(card_entity) = table_card_query.get(*entity) {
-                                        captured_cards.push(card_entity.card);
-                                    }
+                        if card.rank == Rank::Jack {
+                            // Jack captures all
+                            captured_entities = table.take_all();
+                            // Convert entities to cards for the event
+                            for entity in &captured_entities {
+                                if let Ok(table_card) = card_query.get(*entity) {
+                                    captured_cards.push(*table_card);
                                 }
-                            } else {
-                                // Regular capture - take matching rank
-                                let mut entities_to_capture = Vec::new();
-                                for &entity in &table.cards {
-                                    if let Ok(card_entity) = table_card_query.get(entity) {
-                                        if card_entity.card.rank == card.rank {
-                                            entities_to_capture.push(entity);
-                                            captured_cards.push(card_entity.card);
-                                        }
-                                    }
-                                }
-                                // Remove captured entities from table
-                                table.cards.retain(|&e| !entities_to_capture.contains(&e));
-                                captured_entities = entities_to_capture;
                             }
-                            
-                            // Check for Kseri
-                            let is_kseri = was_single_card && captured_cards.len() == 1 && 
-                                card.makes_kseri(1);
-                            
-                            // Check for double Kseri (Jack capturing Jack)
-                            let is_double_kseri = is_kseri && 
-                                card.rank == Rank::Jack && 
-                                captured_cards.iter().any(|c| c.rank == Rank::Jack);
-                            
-                            // Include the played card in captures
-                            captured_cards.push(card);
-                            captured_entities.push(*entity);
-                            
-                            // Send capture event
-                            capture_events.send(CaptureEvent {
-                                player_id: event.player_id,
-                                played_card: card,
-                                captured_cards: captured_cards.clone(),
-                                captured_entities: captured_entities.clone(),
-                                is_kseri,
-                                is_double_kseri,
-                            });
-                            
-                            // Update card entity location
-                            if let Ok((mut card_entity, _)) = card_entity_query.get_mut(*entity) {
-                                card_entity.location = CardLocation::PlayerScore(event.player_id);
-                            }
-                            
-                            // Transition to processing capture
-                            next_phase.set(PlayingPhase::ProcessingCapture);
                         } else {
-                            // No capture - add to table
-                            table.play_card(*entity);
-                            
-                            // Update card entity
-                            if let Ok((mut card_entity, _)) = card_entity_query.get_mut(*entity) {
-                                card_entity.location = CardLocation::Table;
+                            // Regular capture - take matching rank
+                            let mut entities_to_capture = Vec::new();
+                            for &entity in &table.cards {
+                                if let Ok(table_card) = card_query.get(entity) {
+                                    if table_card.rank == card.rank {
+                                        entities_to_capture.push(entity);
+                                        captured_cards.push(*table_card);
+                                    }
+                                }
                             }
-                            commands.entity(*entity)
-                                .insert(TablePosition {
-                                    index: table.cards.len() - 1,
-                                    position: Vec2::new(0.0, 0.0), // Will be calculated by layout system
-                                });
+                            // Remove captured entities from table
+                            table.cards.retain(|&e| !entities_to_capture.contains(&e));
+                            captured_entities = entities_to_capture;
                         }
                         
-                        // End turn
-                        turn_manager.actions_this_turn += 1;
-                        turn_manager.waiting_for_action = false;
+                        // Check for Kseri
+                        let is_kseri = was_single_card && captured_cards.len() == 1 && 
+                            card.makes_kseri(1);
+                        
+                        // Check for double Kseri (Jack capturing Jack)
+                        let is_double_kseri = is_kseri && 
+                            card.rank == Rank::Jack && 
+                            captured_cards.iter().any(|c| c.rank == Rank::Jack);
+                        
+                        // Include the played card in captures
+                        captured_cards.push(card);
+                        captured_entities.push(*entity);
+                        
+                        // Send capture event
+                        capture_events.write(CaptureEvent {
+                            player_id: event.player_id,
+                            played_card: card,
+                            captured_cards: captured_cards.clone(),
+                            captured_entities: captured_entities.clone(),
+                            is_kseri,
+                            is_double_kseri,
+                        });
+                        
+                        // Update card entity location
+                        if let Ok(mut card_entity) = card_entity_query.get_mut(*entity) {
+                            card_entity.location = CardLocation::PlayerScore(event.player_id);
+                        }
+                        
+                        // Transition to processing capture
+                        next_phase.set(PlayingPhase::ProcessingCapture);
+                    } else {
+                        // No capture - add to table
+                        table.play_card(*entity);
+                        
+                        // Update card entity
+                        if let Ok(mut card_entity) = card_entity_query.get_mut(*entity) {
+                            card_entity.location = CardLocation::Table;
+                        }
+                        commands.entity(*entity)
+                            .insert(TablePosition {
+                                index: table.cards.len() - 1,
+                                position: Vec2::new(0.0, 0.0), // Will be calculated by layout system
+                            });
                     }
+                    
+                    // End turn
+                    turn_manager.actions_this_turn += 1;
+                    turn_manager.waiting_for_action = false;
                 }
             }
         }

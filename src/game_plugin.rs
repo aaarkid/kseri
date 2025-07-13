@@ -1,6 +1,6 @@
 use bevy::prelude::*;
+use tracing::info;
 use crate::systems::*;
-use crate::resources::*;
 use crate::components::*;
 
 pub struct KseriGamePlugin;
@@ -12,7 +12,7 @@ impl Plugin for KseriGamePlugin {
         app.init_state::<PlayingPhase>();
         
         // Add resources
-        app.init_resource::<GameManager>();
+        app.insert_resource(GameManager::new(6)); // 6 rounds per game
         app.init_resource::<TurnManager>();
         app.init_resource::<RoundState>();
         
@@ -21,6 +21,8 @@ impl Plugin for KseriGamePlugin {
         app.add_event::<CaptureEvent>();
         app.add_event::<RoundEndEvent>();
         app.add_event::<GameStateTransitionEvent>();
+        app.add_event::<KseriEvent>();
+        app.add_event::<GameOverEvent>();
         
         // Setup systems
         app.add_systems(OnEnter(GameState::GameSetup), setup_game_system);
@@ -34,10 +36,11 @@ impl Plugin for KseriGamePlugin {
                 deal_subsequent_cards.run_if(in_state(PlayingPhase::DealingCards)),
                 
                 // Player turn phase
-                turn_start_system.run_if(in_state(PlayingPhase::PlayerTurn)),
-                validate_play_system.run_if(in_state(PlayingPhase::PlayerTurn)),
-                play_card_system.run_if(in_state(PlayingPhase::PlayerTurn)),
-                check_dealing_needed.run_if(in_state(PlayingPhase::PlayerTurn)),
+                (
+                    turn_start_system,
+                    play_card_system,
+                    check_dealing_needed,
+                ).chain().run_if(in_state(PlayingPhase::PlayerTurn)),
                 
                 // Capture processing
                 process_capture_system.run_if(in_state(PlayingPhase::ProcessingCapture)),

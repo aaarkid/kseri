@@ -3,7 +3,7 @@ module.exports = {
     name: 'kseri-dev-server',
     script: 'serve.py',
     interpreter: 'python3',
-    cwd: '/home/arkid/DEV/kseri-card-rendering',
+    cwd: '/home/arkid/DEV/kseri',
     env: {
       PORT: 8001
     },

@@ -37,44 +37,45 @@ pub fn validate_kseri(played_card: Card, captured_cards: &[Card], was_single_car
         && captured_cards[0].rank == played_card.rank
 }
 
-pub fn validate_play_system(
-    turn_manager: Res<TurnManager>,
-    mut action_events: EventReader<PlayerActionEvent>,
-    hand_query: Query<(&Player, &Hand)>,
-    card_entity_query: Query<&CardEntity>,
-) -> bool {
-    for event in action_events.read() {
-        // Check if it's the correct player's turn
-        if event.player_id != turn_manager.current_player {
-            // warn!("Invalid play: Not player {:?}'s turn", event.player_id);
-            return false;
-        }
-        
-        match &event.action {
-            PlayerAction::PlayCard(entity) => {
-                // Check if the card exists
-                let Ok(_card_entity) = card_entity_query.get(*entity) else {
-                    // warn!("Invalid play: Card entity not found");
-                    return false;
-                };
-                
-                // Check if the card is in the player's hand
-                for (player, hand) in hand_query.iter() {
-                    if player.id == event.player_id {
-                        // Check if the card entity is in the player's hand
-                        if !hand.contains(*entity) {
-                            // warn!("Invalid play: Card not in player's hand");
-                            return false;
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    
-    true
-}
+// Commented out as it's not currently used and causes WASM conflicts
+// pub fn validate_play_system(
+//     turn_manager: Res<TurnManager>,
+//     mut action_events: EventReader<PlayerActionEvent>,
+//     hand_query: Query<(&Player, &Hand)>,
+//     card_entity_query: Query<&CardEntity>,
+// ) -> bool {
+//     for event in action_events.read() {
+//         // Check if it's the correct player's turn
+//         if event.player_id != turn_manager.current_player {
+//             // warn!("Invalid play: Not player {:?}'s turn", event.player_id);
+//             return false;
+//         }
+//         
+//         match &event.action {
+//             PlayerAction::PlayCard(entity) => {
+//                 // Check if the card exists
+//                 let Ok(_card_entity) = card_entity_query.get(*entity) else {
+//                     // warn!("Invalid play: Card entity not found");
+//                     return false;
+//                 };
+//                 
+//                 // Check if the card is in the player's hand
+//                 for (player, hand) in hand_query.iter() {
+//                     if player.id == event.player_id {
+//                         // Check if the card entity is in the player's hand
+//                         if !hand.contains(*entity) {
+//                             // warn!("Invalid play: Card not in player's hand");
+//                             return false;
+//                         }
+//                         break;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     
+//     true
+// }
 
 pub fn validate_state_system(
     game_state: Res<State<GameState>>,

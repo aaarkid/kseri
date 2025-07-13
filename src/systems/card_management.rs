@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 use crate::components::*;
 use crate::systems::game_logic::*;
-use rand::seq::SliceRandom;
 
 /// Deal initial cards at the start of a round
 pub fn deal_initial_cards(
@@ -10,7 +9,7 @@ pub fn deal_initial_cards(
     mut hand_query: Query<(&Player, &mut Hand)>,
     mut table_query: Query<&mut TablePile, With<TableComponent>>,
     mut round_state: ResMut<RoundState>,
-    game_manager: Res<GameManager>,
+    _game_manager: Res<GameManager>,
 ) {
     if round_state.cards_dealt > 0 {
         return; // Already dealt initial cards
@@ -29,7 +28,7 @@ pub fn deal_initial_cards(
 
         // Temporary storage for dealt cards
         let mut player_cards: Vec<(PlayerId, Vec<Card>)> = Vec::new();
-        let mut table_cards: Vec<Card> = Vec::new();
+        let table_cards: Vec<Card>;
 
         // Deal 4 cards to each player
         for (player, _) in hand_query.iter() {
@@ -70,7 +69,6 @@ pub fn deal_initial_cards(
                             CardEntity {
                                 card,
                                 location: CardLocation::PlayerHand(player_id),
-                                face_up: player.is_local, // Only show local player's cards
                             },
                             Transform::from_xyz(0.0, 0.0, 0.0),
                             GlobalTransform::default(),
@@ -97,7 +95,6 @@ pub fn deal_initial_cards(
                 CardEntity {
                     card: *card,
                     location: CardLocation::Table,
-                    face_up: true,
                 },
                 Transform::from_xyz(0.0, 0.0, 1.0 + index as f32 * 0.1),
                 GlobalTransform::default(),
@@ -125,6 +122,7 @@ pub fn deal_subsequent_cards(
     mut hand_query: Query<(&Player, &mut Hand)>,
     mut round_state: ResMut<RoundState>,
     mut round_end_writer: EventWriter<RoundEndEvent>,
+    game_manager: Res<GameManager>,
 ) {
     // Check if all hands are empty
     let all_hands_empty = hand_query.iter().all(|(_, hand)| hand.is_empty());
@@ -140,8 +138,9 @@ pub fn deal_subsequent_cards(
     if deck.remaining() < 8 {
         // Not enough cards for a full deal, trigger round end
         if deck.is_empty() {
-            round_end_writer.send(RoundEndEvent {
-                reason: RoundEndReason::DeckEmpty,
+            round_end_writer.write(RoundEndEvent {
+                round_number: game_manager.round_number,
+                player_scores: [(PlayerId::PLAYER_ONE, 0), (PlayerId::PLAYER_TWO, 0)], // Scores calculated separately
             });
         }
         return;
@@ -156,7 +155,6 @@ pub fn deal_subsequent_cards(
                 CardEntity {
                     card,
                     location: CardLocation::PlayerHand(player.id),
-                    face_up: player.is_local,
                 },
                 Transform::from_xyz(0.0, 0.0, 0.0),
                 GlobalTransform::default(),

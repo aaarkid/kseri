@@ -2,7 +2,6 @@ use image::{ImageBuffer, Rgb, RgbImage};
 use std::fs;
 use crate::components::card::{Card, Suit, Rank};
 use super::{
-    palette::GreekPalette,
     cards::CardGenerator,
     ui::{UIGenerator, ButtonState},
 };

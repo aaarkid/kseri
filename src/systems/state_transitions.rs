@@ -132,9 +132,9 @@ pub fn handle_round_end(
     mut round_end_events: EventReader<RoundEndEvent>,
     table_query: Query<(Entity, &TablePile), With<TableComponent>>,
     mut score_query: Query<(&Player, &mut Score)>,
-    card_entities: Query<Entity, With<CardEntity>>,
+    card_entities: Query<Entity, With<Card>>,
 ) {
-    for event in round_end_events.read() {
+    for _event in round_end_events.read() {
         // info!("Round {} ending: {:?}", game_manager.round_number, event.reason);
         
         // Award remaining table cards to last capturer
@@ -175,7 +175,7 @@ pub fn handle_round_end(
 pub fn handle_state_transition_events(
     mut events: EventReader<GameStateTransitionEvent>,
 ) {
-    for event in events.read() {
+    for _event in events.read() {
         // info!("Game state transition: {:?} -> {:?}", event.from, event.to);
     }
 }

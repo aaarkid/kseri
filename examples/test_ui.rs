@@ -40,9 +40,11 @@ fn setup_test_data(mut commands: Commands) {
             is_local: true,
         },
         Score {
-            cards_collected: vec![],
-            kseri_count: 2,
             total_points: 25,
+            card_value_points: 10,
+            kseri_count: 2,
+            double_kseri_count: 0,
+            cards_collected: vec![],
         },
     )).id();
     
@@ -53,9 +55,11 @@ fn setup_test_data(mut commands: Commands) {
             is_local: false,
         },
         Score {
-            cards_collected: vec![],
-            kseri_count: 1,
             total_points: 15,
+            card_value_points: 5,
+            kseri_count: 1,
+            double_kseri_count: 0,
+            cards_collected: vec![],
         },
     )).id();
     
@@ -72,7 +76,7 @@ fn test_ui_events(
 ) {
     // Press K to trigger Kseri event
     if keyboard.just_pressed(KeyCode::KeyK) {
-        kseri_events.send(KseriEvent {
+        kseri_events.write(KseriEvent {
             player_id: turn_manager.current_player,
             card: Card::new(Suit::Hearts, Rank::King),
         });
@@ -80,7 +84,7 @@ fn test_ui_events(
     
     // Press R to trigger round end
     if keyboard.just_pressed(KeyCode::KeyR) {
-        round_end_events.send(RoundEndEvent {
+        round_end_events.write(RoundEndEvent {
             round_number: 1,
             player_scores: [
                 (PlayerId::PLAYER_ONE, 25),
@@ -91,7 +95,7 @@ fn test_ui_events(
     
     // Press G to trigger game over
     if keyboard.just_pressed(KeyCode::KeyG) {
-        game_over_events.send(GameOverEvent {
+        game_over_events.write(GameOverEvent {
             winner: Some(PlayerId::PLAYER_ONE),
             final_scores: [
                 (PlayerId::PLAYER_ONE, 52),

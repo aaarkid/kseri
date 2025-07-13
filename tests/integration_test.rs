@@ -21,7 +21,7 @@ fn test_dealing_system_integration() {
     app.add_plugins(MinimalPlugins);
     app.init_state::<GameState>();
     app.init_state::<PlayingPhase>();
-    app.init_resource::<GameManager>();
+    app.insert_resource(GameManager::new(6));
     app.init_resource::<TurnManager>();
     app.init_resource::<RoundState>();
     

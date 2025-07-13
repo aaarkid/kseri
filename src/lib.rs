@@ -139,7 +139,7 @@ pub fn run() {
         game_state: Res<State<GameState>>,
         mut next_state: ResMut<NextState<GameState>>,
     ) {
-        if keys.just_pressed(KeyCode::Space) && *game_state.get() == GameState::MainMenu {
+        if keys.just_pressed(KeyCode::Space) && *game_state.get() == GameState::Menu {
             next_state.set(GameState::GameSetup);
         }
     }
