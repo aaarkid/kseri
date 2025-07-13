@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kseri - Greek Card Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2d3436;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        #game-container {
+            position: relative;
+            background-color: #000;
+            border: 2px solid #636e72;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        #error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff6b6b;
+            font-size: 18px;
+            text-align: center;
+            display: none;
+            max-width: 80%;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #00b894;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="bevy" width="800" height="600"></canvas>
+        <div id="loading">
+            <div>Loading Kseri...</div>
+            <div class="spinner"></div>
+        </div>
+        <div id="error">
+            <h3>Error Loading Game</h3>
+            <p id="error-message"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error');
+        const errorMessageElement = document.getElementById('error-message');
+        
+        function showError(message) {
+            loadingElement.style.display = 'none';
+            errorElement.style.display = 'block';
+            errorMessageElement.textContent = message;
+        }
+        
+        // Check for WebGL2 support
+        const canvas = document.getElementById('bevy');
+        const gl = canvas.getContext('webgl2');
+        if (!gl) {
+            showError('WebGL2 is not supported in your browser. Please use a modern browser like Chrome, Firefox, or Safari 15+.');
+            throw new Error('WebGL2 not supported');
+        }
+        
+        try {
+            // Import the WASM module
+            const init = await import('./kseri.js');
+            
+            // Initialize the WASM module
+            await init.default();
+            
+            // Hide loading screen once the game starts
+            // Bevy will take over the canvas
+            setTimeout(() => {
+                loadingElement.style.display = 'none';
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Failed to load WASM:', error);
+            showError(`Failed to load game: ${error.message}`);
+        }
+    </script>
+</body>
+</html>
