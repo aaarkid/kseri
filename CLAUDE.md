@@ -446,6 +446,50 @@ pm2 status
 - Development: http://localhost:8000
 - WASM files served from /web directory
 
+## Git Workflow and Conventions
+
+### Commit Message Format
+```
+<type>(<scope>): <subject>
+
+<body>
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Test additions or modifications
+- `chore`: Maintenance tasks
+- `build`: Build system changes
+
+**Scopes:**
+- `core`: Core game engine/structure
+- `cards`: Card-related functionality
+- `game`: Game logic and rules
+- `server`: WebSocket server
+- `client`: Client-side networking
+- `ui`: User interface
+- `assets`: Visual assets and sprites
+- `config`: Configuration files
+- `taskmaster`: Task Master related
+
+### Tagging Milestones
+Each completed task gets a version tag:
+```bash
+git tag -a v0.1.0-task1 -m "Milestone: Task #1 - Initialize Rust/Bevy Project"
+git tag -a v0.2.0-task2 -m "Milestone: Task #2 - Card Data Structures"
+```
+
+Version format: `v<major>.<minor>.<patch>-task<number>`
+
+### GitHub Repository
+- Remote: https://github.com/aaarkid/kseri.git
+- Main branch: `main`
+- Feature branches: `feature/<description>`
+
 ## Parallel Development with Git Worktrees
 
 ### Setup Parallel Workspaces
