@@ -10,7 +10,9 @@ mod game_plugin;
 
 use game_plugin::KseriGamePlugin;
 use resources::*;
-use systems::GameState;
+use systems::{GameState, PlayerActionEvent, CaptureEvent, RoundEndEvent, 
+              GameStateTransitionEvent, KseriEvent, GameOverEvent, TurnManager, GameManager};
+use systems::ui::*;
 
 fn main() {
     #[cfg(target_arch = "wasm32")]
@@ -39,12 +41,30 @@ fn main() {
         opponent_name: "Sofia".to_string(),
     });
     app.insert_resource(NetworkState::default());
+    app.insert_resource(TurnManager::default());
     
-    // Add basic setup systems
-    app.add_systems(Startup, setup);
+    // Add events
+    app.add_event::<PlayerActionEvent>();
+    app.add_event::<CaptureEvent>();
+    app.add_event::<RoundEndEvent>();
+    app.add_event::<GameStateTransitionEvent>();
+    app.add_event::<KseriEvent>();
+    app.add_event::<GameOverEvent>();
     
-    // Start the game
-    app.add_systems(Update, start_game.run_if(resource_exists::<GameManager>));
+    // Add startup systems
+    app.add_systems(Startup, (setup, setup_ui));
+    
+    // Add update systems
+    app.add_systems(Update, (
+        start_game.run_if(resource_exists::<GameManager>),
+        update_score_displays,
+        update_turn_indicator,
+        update_deck_counter,
+        update_game_status_messages,
+        handle_kseri_event,
+        handle_round_end_event,
+        handle_game_over_event,
+    ));
     
     app.run();
 }

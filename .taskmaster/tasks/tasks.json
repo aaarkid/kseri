@@ -375,7 +375,7 @@
         "id": 8,
         "title": "Design Game UI and HUD Elements",
         "description": "Create the user interface elements for game information display",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           1
         ],
@@ -387,7 +387,7 @@
             "id": 1,
             "title": "Set up Bevy UI entity hierarchy",
             "description": "Create the base UI entity structure with proper parent-child relationships for layout management",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "",
             "testStrategy": ""
@@ -396,7 +396,7 @@
             "id": 2,
             "title": "Implement player name displays",
             "description": "Spawn Text2d entities for 'Arkid' and 'Sofia' player names positioned near their respective score areas",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "",
             "testStrategy": ""
@@ -405,7 +405,7 @@
             "id": 3,
             "title": "Create dynamic score displays",
             "description": "Implement score UI that reads from Score components and updates Text2d when scores change",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "",
             "testStrategy": ""
@@ -414,7 +414,7 @@
             "id": 4,
             "title": "Add turn indicator system",
             "description": "Spawn turn indicator sprite from assets/ui.rs and implement system to reposition based on current_player",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "",
             "testStrategy": ""
@@ -423,7 +423,7 @@
             "id": 5,
             "title": "Implement deck counter display",
             "description": "Create deck counter using sprite asset that shows remaining card count from Deck component",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "",
             "testStrategy": ""
@@ -432,7 +432,7 @@
             "id": 6,
             "title": "Build game status message system",
             "description": "Create message display for game events (Kseri!, Round End, etc.) with fade-in/out animations",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "",
             "testStrategy": ""
@@ -662,6 +662,20 @@
             "testStrategy": "Verify automated pipeline generates all assets without errors. Test sprite atlas optimal packing density. Validate RON metadata correctness for Bevy loading. Ensure regeneration produces identical results."
           }
         ]
+      },
+      {
+        "id": 17,
+        "title": "Upgrade UI System to Pixel Art Sprites",
+        "description": "Replace all Text2d UI elements with proper Sprite components using the Greek-themed pixel art assets, creating a cohesive visual aesthetic that matches the card art style",
+        "details": "This task involves a complete overhaul of the current text-based UI to use the pixel art sprites generated in Task #16. Implementation steps: 1) **Score Display Upgrade**: Replace the current Text2d score displays with SpriteBundle components using the score frame sprites from assets/ui.rs. Position the Greek-bordered score frames at the top corners of the screen, with player names rendered inside using the pixel font. Implement a system to dynamically update the score numbers within the frames. 2) **Turn Indicator Sprite**: Replace the text-based turn indicator with the arrow sprite asset, implementing smooth rotation or translation animations to point at the active player. Use Transform components to animate the arrow's position/rotation. 3) **Deck Counter Visual**: Replace the deck count text with the deck counter sprite frame that includes a card icon. Overlay the remaining card count using the pixel font inside the frame. Position near the deck location. 4) **Kseri Banner Implementation**: Create a system to spawn the Kseri banner sprite when a Kseri capture occurs, with fade-in/fade-out animations using Bevy's color components. The banner should appear prominently in the center of the screen for 2-3 seconds. 5) **Button Sprites Integration**: If any UI buttons exist or are added (like 'Play Again'), replace them with the button sprites that include hover and pressed states. Implement interaction systems to swap textures based on mouse hover/click events. 6) **Sprite Loading System**: Create a centralized UI sprite loading system that loads all UI textures at startup and stores handles in a resource for efficient access. Use texture atlases where appropriate to minimize draw calls. 7) **Layout Adjustments**: Ensure all sprite-based UI elements are properly positioned using Bevy's Transform2D system, maintaining responsive layouts that work at different resolutions while preserving pixel-perfect rendering.",
+        "testStrategy": "1) Verify all Text2d elements have been successfully replaced with sprite equivalents by searching the codebase for any remaining Text2d components in UI code. 2) Test score frame updates by triggering score changes and confirming the numbers update correctly within the sprite frames. 3) Validate turn indicator animation by switching between players and observing smooth arrow movement/rotation. 4) Test Kseri banner by triggering Kseri captures and verifying the banner appears with proper fade animations and timing. 5) Check deck counter updates as cards are dealt, ensuring the count decrements properly within the sprite frame. 6) Test all UI elements at different window sizes to ensure sprites scale appropriately without distortion. 7) Profile render performance to ensure sprite batching is working and draw calls are minimized. 8) Verify pixel-perfect rendering by checking that sprites appear crisp without blurring at 1x and 2x scale factors. 9) Test memory usage to ensure all UI textures are properly loaded once and reused. 10) Validate visual consistency by comparing all UI elements against the Greek pixel art aesthetic established in the card designs.",
+        "status": "pending",
+        "dependencies": [
+          5,
+          16
+        ],
+        "priority": "medium",
+        "subtasks": []
       }
     ],
     "metadata": {
