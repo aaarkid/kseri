@@ -34,7 +34,7 @@ pub fn play_card_system(
     mut next_phase: ResMut<NextState<PlayingPhase>>,
     mut hand_query: Query<(&Player, &mut Hand)>,
     mut table_query: Query<&mut TablePile, With<TableComponent>>,
-    card_entity_query: Query<(&CardEntity, &Transform)>,
+    mut card_entity_query: Query<(&mut CardEntity, &Transform)>,
     table_card_query: Query<&CardEntity>,
 ) {
     for event in action_events.read() {
@@ -45,7 +45,7 @@ pub fn play_card_system(
         
         match &event.action {
             PlayerAction::PlayCard(entity) => {
-                if let Ok((card_entity, transform)) = card_entity_query.get(*entity) {
+                if let Ok((card_entity, _transform)) = card_entity_query.get(*entity) {
                     let card = card_entity.card;
                     
                     // Remove from player's hand
@@ -81,7 +81,7 @@ pub fn play_card_system(
                         
                         if can_capture {
                             // Determine what cards are captured
-                            let mut captured_entities = Vec::new();
+                            let mut captured_entities;
                             let mut captured_cards = Vec::new();
                             let was_single_card = table.cards.len() == 1;
                             
@@ -112,23 +112,25 @@ pub fn play_card_system(
                             
                             // Check for Kseri
                             let is_kseri = was_single_card && captured_cards.len() == 1 && 
-                                card.makes_kseri(&captured_cards[0]);
+                                card.makes_kseri(1);
                             
                             // Include the played card in captures
                             captured_cards.push(card);
+                            captured_entities.push(*entity);
                             
                             // Send capture event
                             capture_events.write(CaptureEvent {
                                 player_id: event.player_id,
                                 played_card: card,
                                 captured_cards: captured_cards.clone(),
+                                captured_entities: captured_entities.clone(),
                                 is_kseri,
                             });
                             
                             // Update card entity location
-                            commands.entity(*entity).insert(
-                                CardLocation::PlayerScore(event.player_id)
-                            );
+                            if let Ok((mut card_entity, _)) = card_entity_query.get_mut(*entity) {
+                                card_entity.location = CardLocation::PlayerScore(event.player_id);
+                            }
                             
                             // Transition to processing capture
                             next_phase.set(PlayingPhase::ProcessingCapture);
@@ -137,8 +139,10 @@ pub fn play_card_system(
                             table.play_card(*entity);
                             
                             // Update card entity
+                            if let Ok((mut card_entity, _)) = card_entity_query.get_mut(*entity) {
+                                card_entity.location = CardLocation::Table;
+                            }
                             commands.entity(*entity)
-                                .insert(CardLocation::Table)
                                 .insert(TablePosition {
                                     index: table.cards.len() - 1,
                                     position: Vec2::new(0.0, 0.0), // Will be calculated by layout system
@@ -151,7 +155,6 @@ pub fn play_card_system(
                     }
                 }
             }
-            _ => {}
         }
     }
 }
@@ -192,7 +195,7 @@ pub fn process_capture_system(
         // Add to player's score
         for (player, mut score) in score_query.iter_mut() {
             if player.id == event.player_id {
-                score.add_cards(event.captured_cards.clone());
+                score.add_collected_cards(event.captured_entities.clone());
                 if event.is_kseri {
                     score.add_kseri();
                 }

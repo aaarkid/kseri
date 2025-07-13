@@ -53,7 +53,7 @@ pub fn validate_play_system(
         match &event.action {
             PlayerAction::PlayCard(entity) => {
                 // Check if the card exists
-                let Ok(card_entity) = card_entity_query.get(*entity) else {
+                let Ok(_card_entity) = card_entity_query.get(*entity) else {
                     // warn!("Invalid play: Card entity not found");
                     return false;
                 };
@@ -70,7 +70,6 @@ pub fn validate_play_system(
                     }
                 }
             }
-            _ => {}
         }
     }
     

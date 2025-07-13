@@ -26,6 +26,7 @@ pub struct GameManager {
     pub total_rounds: u32,
     pub deck_entity: Option<Entity>,
     pub table_entity: Option<Entity>,
+    pub last_capture: Option<LastCapture>,
 }
 
 impl GameManager {
@@ -35,6 +36,7 @@ impl GameManager {
             total_rounds,
             deck_entity: None,
             table_entity: None,
+            last_capture: None,
         }
     }
 
@@ -52,6 +54,7 @@ pub struct TurnManager {
     pub current_player: PlayerId,
     pub turn_number: u32,
     pub waiting_for_action: bool,
+    pub actions_this_turn: u32,
 }
 
 impl TurnManager {
@@ -63,6 +66,14 @@ impl TurnManager {
         };
         self.turn_number += 1;
         self.waiting_for_action = false;
+        self.actions_this_turn = 0;
+    }
+    
+    pub fn reset_for_new_round(&mut self) {
+        self.turn_number = 0;
+        self.actions_this_turn = 0;
+        self.waiting_for_action = false;
+        // Current player stays the same for the new round
     }
 }
 
@@ -96,5 +107,18 @@ pub struct CaptureEvent {
     pub player_id: PlayerId,
     pub played_card: Card,
     pub captured_cards: Vec<Card>,
+    pub captured_entities: Vec<Entity>,
     pub is_kseri: bool,
+}
+
+#[derive(Event)]
+pub struct RoundEndEvent {
+    pub round_number: u32,
+    pub player_scores: [(PlayerId, u32); 2],
+}
+
+#[derive(Event)]
+pub struct GameStateTransitionEvent {
+    pub from: GameState,
+    pub to: GameState,
 }

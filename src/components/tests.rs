@@ -126,7 +126,7 @@ mod deck_tests {
     
     #[test]
     fn test_deck_shuffle_changes_order() {
-        let mut deck1 = Deck::new();
+        let deck1 = Deck::new();
         let mut deck2 = Deck::new();
         
         // Save original order

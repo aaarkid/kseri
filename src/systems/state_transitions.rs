@@ -33,7 +33,7 @@ pub fn setup_game_system(
     )).id();
     
     // Create player entities
-    let player_one = commands.spawn((
+    let _player_one = commands.spawn((
         Player {
             id: PlayerId::PLAYER_ONE,
             name: "Player 1".to_string(),
@@ -45,7 +45,7 @@ pub fn setup_game_system(
         GlobalTransform::default(),
     )).id();
     
-    let player_two = commands.spawn((
+    let _player_two = commands.spawn((
         Player {
             id: PlayerId::PLAYER_TWO,
             name: "Player 2".to_string(),

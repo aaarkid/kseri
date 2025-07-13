@@ -12,7 +12,7 @@ pub const CARD_HEIGHT: u32 = 96;
 
 pub struct CardGenerator {
     palette: GreekPalette,
-    font_5x7: BitmapFont5x7,
+    _font_5x7: BitmapFont5x7,
     font_3x5: BitmapFont3x5,
 }
 
@@ -20,7 +20,7 @@ impl CardGenerator {
     pub fn new() -> Self {
         Self {
             palette: GreekPalette::new(),
-            font_5x7: BitmapFont5x7::new(),
+            _font_5x7: BitmapFont5x7::new(),
             font_3x5: BitmapFont3x5::new(),
         }
     }
