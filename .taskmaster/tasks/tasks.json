@@ -127,7 +127,7 @@
         "id": 3,
         "title": "Design Core Game State Management",
         "description": "Implement the game state system that tracks all aspects of a Kseri game",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           2
         ],
@@ -139,7 +139,7 @@
             "id": 1,
             "title": "Design GameState Struct",
             "description": "Create the core GameState struct that will hold all game state data including current phase, turn information, and game conditions",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "Define the GameState struct with fields for game phase (Setup/Playing/GameOver), current turn, references to existing components: two Hand instances for players, TablePile for board state, Deck for remaining cards, two Score instances for tracking. Use the structures from src/components/ as building blocks. Consider using Bevy's Resource trait for global access.",
             "testStrategy": ""
@@ -148,7 +148,7 @@
             "id": 2,
             "title": "Implement Bevy ECS Components",
             "description": "Create ECS components for all game entities including players, pieces, tiles, and game objects",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               1
             ],
@@ -159,7 +159,7 @@
             "id": 3,
             "title": "Create State Transition Systems",
             "description": "Implement systems for handling transitions between different game states and phases",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               1,
               2
@@ -171,7 +171,7 @@
             "id": 4,
             "title": "Implement Turn Management",
             "description": "Create turn-based game flow management including player turn tracking and action sequencing",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               1,
               3
@@ -183,7 +183,7 @@
             "id": 5,
             "title": "Add State Validation Logic",
             "description": "Implement validation systems to ensure game state consistency and prevent invalid actions",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               2,
               4
@@ -195,7 +195,7 @@
             "id": 6,
             "title": "Integrate with Bevy Scheduling",
             "description": "Configure systems with Bevy's scheduling system ensuring proper execution order and thread safety",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               3,
               4,
@@ -405,7 +405,7 @@
         "testStrategy": "Test two-client connection and pairing. Verify move validation prevents cheating. Test state synchronization accuracy. Simulate network issues and verify recovery. Load test with multiple reconnections.",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -413,7 +413,7 @@
             "description": "Initialize a Rust project with tokio-tungstenite for WebSocket support and implement basic connection acceptance",
             "dependencies": [],
             "details": "Create new Rust binary crate for the game server. Add dependencies: tokio (with full features), tokio-tungstenite, futures-util, serde, serde_json. Set up basic WebSocket server listening on port 8080. Implement connection upgrade from HTTP to WebSocket. Create basic connection handler that logs new connections and handles the WebSocket handshake.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -424,7 +424,7 @@
               1
             ],
             "details": "Design ClientConnection struct with unique ID, WebSocket sink/stream, connection state, and player name. Create ConnectionPool using Arc<Mutex<HashMap>> to store active connections. Implement connection registration on new WebSocket connections. Add heartbeat/ping mechanism to detect stale connections. Create connection cleanup logic for disconnected clients.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -435,7 +435,7 @@
               2
             ],
             "details": "Create GameSession struct containing two player IDs, game state, and session ID. Implement waiting queue for unpaired players. Create pairing logic: when second player joins, create new GameSession with both players. Design message protocol for lobby actions: join_lobby, leave_lobby, game_ready. Send game_start message to both players when paired with session ID and opponent info.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -446,7 +446,7 @@
               3
             ],
             "details": "Port Kseri game rules to server (or use shared crate). Store authoritative GameState per session including deck, hands, table cards, scores. Implement move validation: verify player owns the card, check if it's their turn, validate move legality. Process moves atomically: validate, apply state change, update scores. Implement special rules like Kseri scoring and card collection logic server-side.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -457,7 +457,7 @@
               4
             ],
             "details": "Implement state diff calculation to minimize network traffic. Create reliable broadcast mechanism to send state updates to both players after each move. Add reconnection support: store session state for disconnected players with 60-second timeout. Implement reconnection protocol: client sends session_id and player_id to resume. Handle edge cases: player disconnecting during their turn, simultaneous disconnections, reconnection during state updates.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -534,7 +534,7 @@
         "id": 16,
         "title": "Create Pixel Art Assets for Greek-Themed Kseri Cards",
         "description": "Design and create comprehensive pixel art assets including all 52 playing cards, card back design, table texture, and UI elements in a cohesive Greek-inspired retro aesthetic using programmatic generation",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           5
         ],
@@ -546,7 +546,7 @@
             "id": 1,
             "title": "Set Up Pixel Art Generation Framework and Define Color Palette",
             "description": "Configure the programmatic pixel art development environment and establish the 16-color Greek-themed palette as code constants",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "Set up Python environment with PIL/Pillow or Rust with image crate. Define color palette as constants in code: 4 base colors (pure white #FFFFFF, pure black #000000, light gray #C0C0C0, dark gray #808080), 4 suit colors (bright red #FF0000, dark red #8B0000, bright blue #0000FF, dark blue #00008B), and 8 accent colors (gold #FFD700, bronze #CD7F32, olive #808000, terracotta #C65D00, marble white #F8F8FF, aegean blue #1E90FF, laurel green #4B6F44, wine #722F37). Create helper functions for pixel drawing, pattern generation, and color manipulation. Implement base image creation functions with proper transparency support.",
             "testStrategy": "Verify color constants render correctly. Test helper functions produce expected pixel outputs. Ensure generated images maintain proper transparency channels."
@@ -555,7 +555,7 @@
             "id": 2,
             "title": "Generate Card Template and Basic Elements Programmatically",
             "description": "Create code to generate the base 64x96 pixel card template with Greek-inspired borders, suit symbols, and rank typography",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               1
             ],
@@ -566,7 +566,7 @@
             "id": 3,
             "title": "Implement Face Card Character Generation Algorithms",
             "description": "Create algorithms to generate unique Greek deity/hero pixel art for all 12 face cards programmatically",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               2
             ],
@@ -577,7 +577,7 @@
             "id": 4,
             "title": "Generate Number Cards and Card Back Design Programmatically",
             "description": "Create code to generate all 40 number cards and an ornate Greek-themed card back design",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               3
             ],
@@ -588,7 +588,7 @@
             "id": 5,
             "title": "Generate Table Texture and UI Elements Through Code",
             "description": "Create algorithms for generating marble table texture and all UI component sprites programmatically",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               4
             ],
@@ -599,7 +599,7 @@
             "id": 6,
             "title": "Create Asset Export Pipeline and Sprite Atlas Generator",
             "description": "Build automated pipeline to export all generated assets and create optimized sprite atlas for Bevy",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               5
             ],
@@ -611,7 +611,7 @@
     ],
     "metadata": {
       "created": "2025-07-13T04:39:30.570Z",
-      "updated": "2025-07-13T06:23:20.666Z",
+      "updated": "2025-07-13T07:29:28.531Z",
       "description": "Tasks for master context"
     }
   }
