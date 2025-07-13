@@ -1,0 +1,91 @@
+## Kseri Card Game - Product Requirements Document
+
+### Project Overview
+Implement the Greek card game Kseri as a web-based multiplayer game using Rust with Bevy game engine, compiled to WebAssembly (WASM) for deployment on an nginx server. The game will support exactly two players (Arkid and Sofia) playing over the internet.
+
+### Core Game Rules (Kseri)
+- Played with a standard 52-card deck
+- 2 players
+- Each player receives 4 cards at the start, repeated when hands are empty
+- 4 cards are placed face-up on the table initially
+- Players take turns playing one card from their hand
+- If the played card matches the rank of the top table card, player collects all table cards
+- Special scoring: collecting with a Jack scores 1 point (Kseri)
+- Game continues until deck is exhausted
+- Points are counted based on cards collected
+
+### Technical Requirements
+
+#### Frontend (Game Client)
+- Rust with Bevy game engine
+- Compile to WebAssembly (WASM)
+- Responsive design for desktop browsers
+- Visual card representations with drag-and-drop or click-to-play
+- Smooth animations for card movements
+- Visual feedback for valid/invalid moves
+- Score display for both players
+- Turn indicator
+
+#### Backend (Game Server)
+- WebSocket server for real-time gameplay
+- Simple matchmaking: direct connection between exactly 2 players
+- Game state synchronization
+- Move validation on server side
+- Reconnection support if player disconnects
+
+#### Network Architecture
+- Simple peer-to-peer style connection through server
+- No lobby system, no room management
+- Players can choose their name (Arkid or Sofia) when connecting
+- First player to connect waits, second player triggers game start
+- Automatic game reset when both players disconnect
+
+#### Deployment
+- Static WASM files served via nginx
+- WebSocket server running alongside nginx
+- Simple configuration for production deployment
+
+### User Experience
+
+#### Game Flow
+1. Player visits the game URL
+2. Player selects their name (Arkid or Sofia)
+3. If first player: "Waiting for opponent..." screen
+4. If second player: Game starts immediately
+5. Players take turns playing cards
+6. Game ends when deck is exhausted
+7. Final score display with winner announcement
+8. Option to play again
+
+#### UI Elements
+- Game board showing:
+  - Player's hand (bottom of screen)
+  - Opponent's card backs (top of screen)
+  - Table cards (center)
+  - Deck remaining counter
+  - Score for both players
+  - Current turn indicator
+  - Player names
+
+### Non-Functional Requirements
+- Low latency gameplay (< 100ms for moves)
+- Graceful handling of disconnections
+- Mobile-friendly but desktop-first design
+- No user accounts or persistent storage needed
+- No chat system required
+
+### Out of Scope
+- AI opponents
+- Multiple game rooms
+- Tournament system
+- Player statistics/history
+- In-game chat
+- Mobile app versions
+- Social features
+
+### Success Criteria
+- Two players can connect and play a complete game of Kseri
+- Game rules are correctly implemented
+- Smooth gameplay experience with no significant bugs
+- Easy deployment to nginx server
+- Stable WebSocket connections

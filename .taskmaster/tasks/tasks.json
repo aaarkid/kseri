@@ -1,0 +1,564 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Initialize Rust/Bevy Project Structure",
+        "description": "Set up the initial Rust project with Bevy game engine and configure it for WebAssembly compilation",
+        "details": "Create a new Rust project using cargo. Add Bevy as a dependency with WASM support. Set up the basic project structure with separate modules for game logic, networking, and UI. Configure Cargo.toml with necessary dependencies including bevy, wasm-bindgen, web-sys for browser APIs, and tokio-tungstenite for WebSocket support. Create wasm build configuration and basic index.html template for serving the game.",
+        "testStrategy": "Verify that the project compiles to both native and WASM targets. Test that a basic Bevy window opens in the browser when served via a local web server. Ensure all dependencies are properly resolved.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Rust project structure",
+            "description": "Initialize a new Rust project with cargo and set up the basic directory structure for a Bevy game",
+            "dependencies": [],
+            "details": "Run `cargo new kseri --bin` to create the project. Create directories for assets/, src/components/, src/systems/, src/resources/, and web/ for organizing game code and web deployment files",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Configure Bevy dependencies",
+            "description": "Add Bevy and related dependencies to Cargo.toml with proper feature flags for both native and WASM targets",
+            "dependencies": [
+              1
+            ],
+            "details": "Add bevy = \"0.14\" with features = [\"dynamic_linking\"] for development. Configure target-specific dependencies using [target.'cfg(target_arch = \"wasm32\")'.dependencies] for wasm-bindgen and web-sys. Add bevy_egui for UI and other common Bevy plugins",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Set up WebAssembly build toolchain",
+            "description": "Install and configure the necessary tools for building Rust to WebAssembly",
+            "dependencies": [
+              2
+            ],
+            "details": "Install wasm-pack with `cargo install wasm-pack`. Add rust target with `rustup target add wasm32-unknown-unknown`. Create a build script or Makefile for WASM compilation with proper flags like --target web and optimization settings",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create module structure for game components",
+            "description": "Implement the initial module structure and basic game components following Bevy's ECS pattern",
+            "dependencies": [
+              2
+            ],
+            "details": "Create mod.rs files for components, systems, and resources modules. Implement a basic App setup in main.rs with DefaultPlugins. Create placeholder modules for player, enemy, physics, and ui components. Set up proper module exports and imports",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Set up web serving infrastructure",
+            "description": "Create the HTML template and web server setup for serving the WASM build",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create index.html with proper canvas element and WASM loading script. Set up a simple HTTP server configuration (using python or node). Create a wasm-bindgen output directory structure. Configure proper CORS headers and MIME types for WASM files",
+            "status": "done",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Implement Card Data Structures and Deck Logic",
+        "description": "Create the core game data structures for cards, deck, and basic card operations",
+        "details": "Define Card struct with suit and rank enums. Implement a Deck struct that holds 52 cards with methods for shuffling (using rand crate), dealing cards, and checking if empty. Create a Hand struct to represent player hands with capacity for 4 cards. Implement methods for adding/removing cards from hands. Define table pile structure to hold face-up cards.",
+        "testStrategy": "Unit tests for deck initialization ensuring 52 unique cards. Test shuffle randomness. Test deal operations maintain deck integrity. Verify hand capacity limits. Test table pile operations for adding and retrieving cards.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define card enums and structs",
+            "description": "Create the foundational data structures for cards including rank and suit enums, and the Card struct",
+            "dependencies": [],
+            "details": "Define Suit enum (Hearts, Diamonds, Clubs, Spades), Rank enum (Ace through King with numeric values), and Card struct containing suit and rank. Implement Display trait for pretty printing cards. Add methods for card comparison and value calculation.",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement deck with initialization and shuffling",
+            "description": "Create a Deck struct that holds a collection of cards with methods for creation and shuffling",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement Deck struct using Vec<Card>. Create new() method that generates all 52 cards. Add shuffle() method using rand crate and Fisher-Yates algorithm. Include draw() method that returns Option<Card> to handle empty deck case. Ensure proper ownership transfer when drawing cards.",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create hand management logic with capacity constraints",
+            "description": "Implement a Hand struct that manages a player's cards with a maximum capacity",
+            "dependencies": [
+              1
+            ],
+            "details": "Create Hand struct with Vec<Card> and max_capacity field. Implement add_card() method that returns Result to handle capacity overflow. Add remove_card() method for playing cards. Include methods for sorting, searching, and displaying the hand. Ensure proper borrowing patterns for card access.",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement the table pile structure",
+            "description": "Create a structure to represent cards played on the table",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement TablePile struct using Vec<Card> to store played cards. Add play_card() method to add cards to the pile. Include peek_top() method to view the last played card without removing it. Add clear() method to reset the pile. Consider implementing Iterator trait for pile traversal.",
+            "status": "done",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Design Core Game State Management",
+        "description": "Implement the game state system that tracks all aspects of a Kseri game",
+        "details": "Create GameState struct containing: player hands, table cards, deck, scores, current turn, collected cards for each player. Implement state transitions for dealing initial cards, player moves, collecting cards, and end game. Use Bevy's ECS system with components for game entities. Create systems for state validation and game flow control.",
+        "testStrategy": "Test state initialization matches Kseri rules (4 cards per player, 4 on table). Verify state transitions are valid. Test score calculation logic. Ensure game end conditions are properly detected.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design GameState Struct",
+            "description": "Create the core GameState struct that will hold all game state data including current phase, turn information, and game conditions",
+            "dependencies": [],
+            "details": "Define the GameState struct with fields for game phase (Setup/Playing/GameOver), current turn, player states, board state reference, and any global game flags. Consider using Bevy's Resource trait for global access.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Bevy ECS Components",
+            "description": "Create ECS components for all game entities including players, pieces, tiles, and game objects",
+            "dependencies": [
+              1
+            ],
+            "details": "Design components following Bevy's composition pattern: Player component, Piece component with type/owner, Position component, Health/Stats components, and any special ability markers. Ensure components are lightweight and follow single responsibility principle.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create State Transition Systems",
+            "description": "Implement systems for handling transitions between different game states and phases",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Build state machine using Bevy's States API or custom enum-based approach. Create transition handlers for Setup->Playing, turn changes, and game ending conditions. Implement enter/exit handlers for each state to manage resources and UI updates.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement Turn Management",
+            "description": "Create turn-based game flow management including player turn tracking and action sequencing",
+            "dependencies": [
+              1,
+              3
+            ],
+            "details": "Develop TurnManager system that tracks current player, validates turn actions, manages action points or movement limits, and triggers turn end/start events. Integrate with Bevy's event system for turn notifications.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Add State Validation Logic",
+            "description": "Implement validation systems to ensure game state consistency and prevent invalid actions",
+            "dependencies": [
+              2,
+              4
+            ],
+            "details": "Create validation systems that check move legality, verify game rules compliance, validate state transitions, and handle edge cases. Implement rollback capability for invalid actions and provide clear error feedback.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Integrate with Bevy Scheduling",
+            "description": "Configure systems with Bevy's scheduling system ensuring proper execution order and thread safety",
+            "dependencies": [
+              3,
+              4,
+              5
+            ],
+            "details": "Set up system sets and ordering constraints using Bevy's app builder. Configure parallel execution where safe, establish clear data dependencies, and ensure state mutations happen in predictable order. Add appropriate system labels and stages.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Implement Kseri Game Rules Engine",
+        "description": "Create the rule system that validates moves and handles card collection logic",
+        "details": "Implement move validation to check if a card can be played. Create collection logic: when played card rank matches top table card, player collects all table cards. Implement special Kseri scoring when collecting with a Jack (1 point). Handle end-of-hand dealing when both players run out of cards. Implement final scoring based on collected cards.",
+        "testStrategy": "Test all valid and invalid move scenarios. Verify collection happens only on rank match. Test Kseri scoring with Jacks. Test multiple rounds of dealing. Verify final score calculation accuracy.",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement move validation logic",
+            "description": "Create validation system to check if a card can be played based on Kseri rules",
+            "dependencies": [],
+            "details": "Implement functions to validate card plays including: checking if played card matches top card value, verifying Jack can capture any card, ensuring player has the card in hand, and preventing invalid moves. Include comprehensive error handling and clear validation messages.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Create card collection mechanics",
+            "description": "Implement the core mechanic for capturing cards from the table",
+            "dependencies": [
+              1
+            ],
+            "details": "Build the card capture logic including: capturing when values match, Jack captures all, collecting entire pile when capture occurs, adding captured cards to player's collection pile, clearing table after capture, and tracking which player made the last capture for end-game scoring.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Handle special Kseri scoring rules",
+            "description": "Implement the unique Kseri scoring system with special card values",
+            "dependencies": [
+              2
+            ],
+            "details": "Create scoring functions for: regular Kseri (capturing single card) worth 10 points, double Kseri (capturing Jack with Jack) worth 20 points, special card values (Jack of Diamonds = 1, Two of Clubs = 2, Ten of Diamonds = 3, each Ace = 1), majority cards bonus (3 points), and tracking score throughout the game.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement multi-round dealing logic",
+            "description": "Create the dealing system for Kseri's multiple distribution rounds",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Implement dealing mechanics including: initial deal of 4 cards to each player and 4 to table (ensuring no Jacks in initial table cards), subsequent deals of 4 cards to each player when hands empty, continuing until deck exhausted, handling special case where all initial table cards are Jacks, and managing deal order based on current dealer.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create the final scoring calculator",
+            "description": "Build comprehensive end-game scoring system combining all scoring rules",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Develop final scoring that: counts special card points for each player, awards majority cards bonus, gives remaining table cards to last capturer, calculates Kseri bonuses earned during play, determines winner based on total points, handles tie-breaking rules, and provides detailed score breakdown for players.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Create Card Rendering and Visual Assets",
+        "description": "Implement the visual representation of cards and game board using Bevy's rendering system",
+        "details": "Create or source SVG/sprite assets for all 52 cards plus card back. Implement Card entity with Sprite component in Bevy. Set up proper layering for overlapping cards. Create visual layouts for player hand (bottom), opponent hand (top showing backs), and table pile (center). Implement card sizing and positioning logic responsive to window size.",
+        "testStrategy": "Visual testing of all card renders. Verify cards display correctly at different resolutions. Test layering when cards overlap. Ensure card backs hide opponent's cards properly.",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Source or create card visual assets",
+            "description": "Gather or design visual assets for the card game including card backs, faces, suits, ranks, and any special card designs",
+            "dependencies": [],
+            "details": "Create or source high-quality card assets in appropriate formats (PNG/SVG). Include standard deck cards, card back design, and any special cards. Ensure assets are properly sized and optimized for game use. Consider creating multiple resolution versions for different screen sizes.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement card entity rendering with Bevy sprites",
+            "description": "Create the core card rendering system using Bevy's sprite system to display card entities in the game",
+            "dependencies": [
+              1
+            ],
+            "details": "Set up Bevy sprite components for cards, implement texture loading and management, create card entity spawning system, handle card face/back switching, and ensure proper sprite scaling. Include component systems for card state management.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create responsive layout systems for screen areas",
+            "description": "Build flexible layout systems that adapt card positions and sizes to different screen areas and gameplay zones",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement layout managers for different game areas (hand, table, deck, discard pile). Create algorithms for card spacing and positioning that adapt to available space. Handle card overlap in constrained areas. Ensure layouts work across different aspect ratios.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement proper z-ordering for overlapping cards",
+            "description": "Develop a robust z-ordering system to handle card layering and ensure correct visual hierarchy",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Create z-order management system using Bevy's transform components. Implement dynamic z-ordering based on card state (selected, hovered, in-hand vs on-table). Handle edge cases like dragging cards and animation transitions. Ensure consistent rendering order.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Handle window resize events and responsive scaling",
+            "description": "Implement system to detect and respond to window resize events, updating all layouts and card sizes accordingly",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Set up window resize event listeners in Bevy. Implement scaling calculations to maintain aspect ratios. Update all layout systems on resize. Handle edge cases like minimum window sizes. Test across various resolutions and window configurations.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Implement Card Animation System",
+        "description": "Create smooth animations for card movements and game actions",
+        "details": "Use Bevy's animation system to create tweened movements for: dealing cards from deck to hands/table, playing cards from hand to table, collecting cards from table, shuffling animation. Implement easing functions for natural movement. Add particle effects or highlights for Kseri moments. Create hover and selection states for interactive cards.",
+        "testStrategy": "Test animation smoothness at different frame rates. Verify animations complete properly. Test interruption handling if new animation starts before previous finishes. Check visual feedback clarity.",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Build Player Input and Interaction System",
+        "description": "Implement mouse/touch controls for playing cards with proper feedback",
+        "details": "Implement click-to-select and click-to-play card mechanics. Add hover states for valid cards during player's turn. Create drag-and-drop as alternative input method. Disable interactions during opponent's turn. Add visual feedback for invalid move attempts. Implement card selection highlighting.",
+        "testStrategy": "Test click detection accuracy on cards. Verify only valid cards can be selected. Test turn-based input blocking. Verify drag-and-drop works across browsers. Test touch input on mobile browsers.",
+        "priority": "high",
+        "dependencies": [
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Design Game UI and HUD Elements",
+        "description": "Create the user interface elements for game information display",
+        "details": "Implement UI components using Bevy UI or egui: player name displays (Arkid/Sofia), score counters for both players, cards remaining in deck counter, current turn indicator with visual emphasis, game status messages area. Position UI elements to not obstruct gameplay. Use clear, readable fonts and high contrast colors.",
+        "testStrategy": "Test UI scaling at different resolutions. Verify all game information is clearly visible. Test dynamic updates of scores and counters. Ensure UI doesn't overlap with game area.",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement WebSocket Client in WASM",
+        "description": "Create the client-side networking layer for real-time multiplayer communication",
+        "details": "Implement WebSocket client using web-sys WebSocket API for WASM. Create message protocol for game actions: join game, play card, game state sync. Handle connection lifecycle: connect, disconnect, reconnect. Implement automatic reconnection with exponential backoff. Serialize game messages using serde_json.",
+        "testStrategy": "Test WebSocket connection establishment. Verify message serialization/deserialization. Test reconnection logic with simulated disconnects. Verify WASM compatibility in different browsers.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Build WebSocket Game Server",
+        "description": "Create the server-side component that manages game sessions and validates moves",
+        "details": "Implement WebSocket server using tokio-tungstenite. Create simple two-player matching: first connection waits, second triggers game start. Maintain authoritative game state on server. Validate all moves server-side before applying. Broadcast state changes to both clients. Handle player disconnections gracefully with timeout for reconnection.",
+        "testStrategy": "Test two-client connection and pairing. Verify move validation prevents cheating. Test state synchronization accuracy. Simulate network issues and verify recovery. Load test with multiple reconnections.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Implement Game State Synchronization",
+        "description": "Create the system for keeping game state consistent between server and clients",
+        "details": "Design efficient state sync protocol sending only deltas when possible. Implement full state sync on connection/reconnection. Create client-side prediction for responsive feel with server reconciliation. Handle conflicting states with server as authority. Add sequence numbers to prevent out-of-order message issues.",
+        "testStrategy": "Test state consistency with rapid moves. Verify reconnection restores correct state. Test client prediction accuracy. Simulate packet loss and verify recovery. Test with artificial network latency.",
+        "priority": "high",
+        "dependencies": [
+          9,
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Create Game Flow and Screens",
+        "description": "Implement the different game screens and flow between them",
+        "details": "Create name selection screen with buttons for Arkid/Sofia. Implement waiting screen with 'Waiting for opponent...' message and spinner. Build game-over screen showing final scores, winner announcement, and 'Play Again' button. Add smooth transitions between screens. Handle edge cases like opponent disconnecting during name selection.",
+        "testStrategy": "Test all screen transitions. Verify game flow from start to end. Test 'Play Again' functionality. Verify proper cleanup between games. Test edge cases in screen flow.",
+        "priority": "medium",
+        "dependencies": [
+          8,
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Implement Deployment Configuration",
+        "description": "Set up the build pipeline and deployment configuration for nginx hosting",
+        "details": "Create production build scripts for WASM compilation with optimization flags. Set up nginx configuration to serve static WASM files with proper MIME types and CORS headers. Configure WebSocket proxy pass for the game server. Create Docker setup for easy deployment. Document environment variables and configuration options.",
+        "testStrategy": "Test production builds for size and performance. Verify nginx serves WASM files correctly. Test WebSocket connections through nginx proxy. Verify CORS settings work correctly. Test complete deployment process.",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Add Polish and Game Feel Improvements",
+        "description": "Enhance the game experience with audio, visual effects, and quality-of-life features",
+        "details": "Add sound effects for card plays, collections, and Kseri moments using web-audio. Implement subtle screen shake or zoom for Kseri collections. Add tooltips explaining game rules on first play. Create smooth loading states between actions. Add connection quality indicator. Implement proper error messages for connection issues.",
+        "testStrategy": "Test audio playback across browsers. Verify effects enhance rather than distract. Test loading states appear appropriately. Verify error messages are helpful. Test on various connection speeds.",
+        "priority": "low",
+        "dependencies": [
+          7,
+          12
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Performance Testing and Optimization",
+        "description": "Optimize the game for smooth performance and low latency gameplay",
+        "details": "Profile WASM performance using browser dev tools. Optimize render calls in Bevy for 60fps gameplay. Minimize WebSocket message sizes using efficient serialization. Implement sprite batching for cards. Add performance metrics overlay for debugging. Optimize asset loading with texture atlases. Target <100ms latency for move registration.",
+        "testStrategy": "Benchmark frame rates during gameplay. Measure network message sizes and latency. Test on low-end devices. Verify no memory leaks during extended play. Profile and eliminate performance bottlenecks.",
+        "priority": "medium",
+        "dependencies": [
+          14
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Create Pixel Art Assets for Greek-Themed Kseri Cards",
+        "description": "Design and create comprehensive pixel art assets including all 52 playing cards, card back design, table texture, and UI elements in a cohesive Greek-inspired retro aesthetic",
+        "details": "Create pixel art card designs at 64x96 resolution for optimal readability while maintaining retro aesthetic. Design clear suit symbols: Hearts (red), Diamonds (red), Clubs (black), Spades (black) using 8x8 pixel icons. Implement rank indicators (A, 2-10, J, Q, K) using 5x7 pixel font for clarity. Add Greek-inspired decorative borders using classical patterns like meander/key patterns, with corner flourishes at 4x4 pixels. Design unique face cards (J, Q, K) with simplified Greek deity/hero representations: Jacks as young warriors, Queens as goddesses (Athena, Hera, Aphrodite), Kings as gods (Zeus, Poseidon, Ares). Create cohesive card back design featuring Greek column motifs or amphora patterns in symmetrical layout. Limit color palette to 16 colors maximum: base colors (white, black, 2 grays), suit colors (2 reds, 2 blues), accent colors (gold, bronze, olive, terracotta). Design table texture as repeating 32x32 tile with marble or stone pattern. Create UI element sprites: score display frames (Greek border style), button designs with hover states, turn indicator arrows, deck counter icon. Export all assets as PNG files with transparency. Create sprite atlas for efficient loading in Bevy. Include source files in Aseprite or similar format for future modifications.",
+        "testStrategy": "Verify all 52 cards are visually distinct and readable at actual game size. Test card visibility against table texture background for sufficient contrast. Validate color palette consistency across all assets. Test card rendering in Bevy at different zoom levels (1x, 2x scaling). Verify face card designs are recognizable as J/Q/K at small sizes. Test UI elements for clarity and proper alignment when integrated. Check sprite atlas loading performance. Verify transparency works correctly for overlapping cards. Test aesthetic cohesion by viewing all assets together. Validate that Greek theming is consistent but doesn't impair gameplay readability.",
+        "status": "pending",
+        "dependencies": [
+          5
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set Up Pixel Art Workspace and Define Color Palette",
+            "description": "Configure the pixel art development environment and establish the 16-color Greek-themed palette that will be used across all game assets",
+            "dependencies": [],
+            "details": "Install and configure Aseprite or similar pixel art software. Create a master palette file with exactly 16 colors: 4 base colors (pure white #FFFFFF, pure black #000000, light gray #C0C0C0, dark gray #808080), 4 suit colors (bright red #FF0000, dark red #8B0000, bright blue #0000FF, dark blue #00008B), and 8 accent colors (gold #FFD700, bronze #CD7F32, olive #808000, terracotta #C65D00, marble white #F8F8FF, aegean blue #1E90FF, laurel green #4B6F44, wine #722F37). Save palette as .pal file for consistent use across all assets.",
+            "status": "pending",
+            "testStrategy": "Verify palette file loads correctly in chosen software. Test color visibility against both light and dark backgrounds. Ensure colors maintain distinction when viewed at small scales."
+          },
+          {
+            "id": 2,
+            "title": "Design Card Template and Basic Elements",
+            "description": "Create the base 64x96 pixel card template with Greek-inspired borders, suit symbols, and rank typography",
+            "dependencies": [
+              1
+            ],
+            "details": "Design card template with 2-pixel white border and 1-pixel black outline. Create Greek meander pattern border using 4x4 pixel tiles around card edges. Design 8x8 pixel suit symbols: hearts and diamonds in two-tone red, clubs and spades in black with gray highlights for depth. Implement 5x7 pixel font for ranks (A, 2-10, J, Q, K) positioned at top-left and bottom-right corners. Create mirrored layout so bottom rank/suit appears upside down. Add subtle drop shadow effect using darker palette colors. Save as reusable template layers.",
+            "status": "pending",
+            "testStrategy": "Print cards at actual size to verify readability. Test template with all suit/rank combinations. Verify 2x scaling maintains pixel-perfect clarity."
+          },
+          {
+            "id": 3,
+            "title": "Create Face Card Character Designs",
+            "description": "Design unique Greek deity/hero pixel art for all 12 face cards (J, Q, K for each suit)",
+            "dependencies": [
+              2
+            ],
+            "details": "Design Jacks as young Greek warriors (32x48 pixel art area): Hearts - Achilles with spear, Diamonds - Perseus with shield, Clubs - Theseus with sword, Spades - Jason with helmet. Create Queens as goddesses: Hearts - Aphrodite with roses, Diamonds - Athena with owl, Clubs - Hera with peacock feather, Spades - Artemis with bow. Design Kings as major gods: Hearts - Zeus with lightning, Diamonds - Apollo with lyre, Clubs - Poseidon with trident, Spades - Hades with helm. Use limited colors per character (4-5 colors max). Apply Greek pottery art style with profile views and geometric simplification.",
+            "status": "pending",
+            "testStrategy": "Ensure each character is visually distinct at card size. Verify thematic consistency across all face cards. Test that characters don't obscure suit/rank indicators."
+          },
+          {
+            "id": 4,
+            "title": "Generate Number Cards and Card Back Design",
+            "description": "Complete all 40 number cards (2-10 + Ace) and create an ornate Greek-themed card back design",
+            "dependencies": [
+              3
+            ],
+            "details": "Apply template to create all number cards with appropriate suit symbol arrangements: Aces with single large centered symbol (16x16 pixels), number cards with standard pip layouts matching traditional playing cards. For card back, design symmetrical pattern featuring Greek amphora in center (24x32 pixels), surrounded by olive branch border pattern. Use gold, terracotta, and aegean blue as primary colors. Add Greek key pattern frame with corner rosettes. Ensure back design works when tiled for deck stack visualization. Export each card as individual PNG with transparency.",
+            "status": "pending",
+            "testStrategy": "Verify all 52 cards are complete and consistent. Test card back pattern symmetry by rotating 180 degrees. Ensure no card information visible from back design."
+          },
+          {
+            "id": 5,
+            "title": "Create Table Texture and UI Elements",
+            "description": "Design the repeating marble table texture and all UI component sprites for the game interface",
+            "dependencies": [
+              4
+            ],
+            "details": "Create 32x32 pixel seamless marble texture using white, light gray, and subtle blue veining. Add slight noise for realistic stone effect. Design UI elements: Score frames (64x24 pixels) with Greek border pattern and gold/bronze coloring, button sprites (48x24 pixels) for 'Play Again' and player names with normal/hover/pressed states using relief effect, turn indicator arrows (16x16 pixels) with animated glow effect frames, deck counter icon (24x24 pixels) showing stacked cards with number overlay area. Create waiting spinner animation (32x32 pixels, 8 frames) using rotating Greek pattern.",
+            "status": "pending",
+            "testStrategy": "Test texture tiling across large area for seamless pattern. Verify UI elements maintain clarity at 1x and 2x scale. Test button state visibility differences."
+          },
+          {
+            "id": 6,
+            "title": "Export Assets and Create Sprite Atlas",
+            "description": "Organize, export all assets in proper formats, and create an optimized sprite atlas for Bevy integration",
+            "dependencies": [
+              5
+            ],
+            "details": "Export all 52 cards + 1 card back as individual PNGs with transparency. Create sprite atlas (512x512 or 1024x1024) containing all cards using texture packing tool. Generate accompanying JSON/RON metadata file with sprite coordinates and names. Export table texture as seamless tile PNG. Create UI atlas with all interface elements. Organize file structure: /assets/cards/ for individuals, /assets/atlas/ for packed textures, /assets/ui/ for interface elements. Include source .aseprite files in /assets/source/ for future editing. Create README documenting asset organization and color palette reference.",
+            "status": "pending",
+            "testStrategy": "Verify sprite atlas loads correctly in Bevy with proper UV coordinates. Test that no visual artifacts appear at sprite edges. Confirm all PNGs use correct transparency. Validate file sizes are optimized for web delivery."
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-13T04:39:30.570Z",
+      "updated": "2025-07-13T06:23:20.666Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
