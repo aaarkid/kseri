@@ -83,36 +83,47 @@ This test:
 
 ### Test Files
 
-1. **test-render.js** - Comprehensive automated test
+All tests are located in the `tests/visual/` directory:
+
+1. **test-card-rendering.js** - Main visual rendering test
    - Checks canvas initialization
-   - Verifies WebGL context
-   - Monitors asset loading
-   - Takes screenshots
+   - Verifies WebGL context availability
+   - Confirms Bevy initialization (canvas resize from 300x150 to 800x600)
+   - Monitors asset loading (expects 50+ PNG files)
+   - Takes screenshots to `screenshots/` directory
+   - Returns exit code 0 on success, 1 on failure
 
-2. **test-debug.js** - Debug test with console capture
-   - Captures all console output
-   - Shows initialization status
-   - Helpful for troubleshooting
-
-3. **test-minimal.js** - Interactive browser test
-   - Opens visible browser window
-   - Allows manual inspection
-   - Keeps browser open for debugging
+2. **test-pm2-deployment.js** - PM2 deployment verification
+   - Checks PM2 installation
+   - Verifies server process status
+   - Tests server accessibility on port 8001
+   - Validates CORS headers configuration
+   - Checks server logs for successful startup
 
 ### Running Tests
 
 ```bash
-# Full development cycle
-npm run dev  # Builds, serves, and tests
+# Run main visual test
+npm test
 
-# Individual test commands
-node test-render.js    # Automated test
-node test-debug.js     # Debug with console output
-node test-minimal.js   # Interactive browser test
+# Run PM2 deployment test
+npm run test:pm2
 
-# Visual test with screenshot viewer
-npm run test:visual
+# Run all tests
+npm run test:all
+
+# Full development cycle (build, serve, test)
+npm run dev
 ```
+
+### Test Output
+
+Tests provide colored console output:
+- 🟢 Green: Passed tests
+- 🟡 Yellow: Warnings or in-progress
+- 🔴 Red: Failed tests
+
+Screenshots are saved to `screenshots/card-rendering-test.png` for visual verification.
 
 ## Troubleshooting
 

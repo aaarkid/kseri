@@ -19,12 +19,11 @@ logs/
 .pm2/
 
 # Test artifacts
+screenshots/
 *.png
-test-*.js
 test-*.html
 debug-*.html
 final-*.html
-serve.py
 
 # IDE
 .vscode/
