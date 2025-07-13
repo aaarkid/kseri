@@ -1,0 +1,18 @@
+{
+  "name": "kseri-card-rendering",
+  "version": "0.1.0",
+  "description": "Kseri card game with Bevy and WASM",
+  "scripts": {
+    "build": "./build-wasm.sh",
+    "serve": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop kseri-dev-server",
+    "restart": "pm2 restart kseri-dev-server",
+    "logs": "pm2 logs kseri-dev-server",
+    "test": "node test-render.js",
+    "test:visual": "node test-render.js && open test-screenshot.png",
+    "dev": "npm run build && npm run serve && sleep 5 && npm run test"
+  },
+  "dependencies": {
+    "puppeteer": "^24.12.1"
+  }
+}

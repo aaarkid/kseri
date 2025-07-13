@@ -1,33 +1,46 @@
+# Rust
 /target
+**/*.rs.bk
+Cargo.lock
 
-# Logs
-logs
-*.log
+# WASM
+/pkg
+/wasm-pack.log
+
+# Node
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-dev-debug.log
-# Dependency directories
-node_modules/
-# Environment variables
-.env
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-# OS specific
+
+# PM2
+logs/
+*.log
+.pm2/
+
+# Test artifacts
+*.png
+test-*.js
+test-*.html
+debug-*.html
+final-*.html
+serve.py
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
+Thumbs.db
 
-# Task files
-# tasks.json
-# tasks/
-
-# Web build output (except index.html and README)
-web/*.wasm
-web/*.js
-!web/index.html
-!web/README.md 
+# Build artifacts
+/dist
+/build
+/web/*.js
+/web/*.wasm
+check-console.js
+verify-rendering.js

@@ -1,19 +1,34 @@
 #!/bin/bash
-set -e
+# Build script for WASM
 
-echo "Building WASM target..."
+echo "Building Kseri for WASM..."
 
-# Build the WASM binary
-cargo build --target wasm32-unknown-unknown --release
+# Build the WASM package
+wasm-pack build --target web --no-typescript
 
-# Create web directory if it doesn't exist
-mkdir -p web
+# Create a simple HTTP server script if needed
+cat > serve.py << EOF
+#!/usr/bin/env python3
+import http.server
+import socketserver
+import os
 
-# Run wasm-bindgen to generate JS bindings
-wasm-bindgen --out-dir web \
-    --target web \
-    --no-typescript \
-    target/wasm32-unknown-unknown/release/kseri.wasm
+PORT = 8001
 
-echo "WASM build complete! Files are in the 'web' directory."
-echo "To serve locally, run: python3 serve.py"
+class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
+        self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
+        super().end_headers()
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+with socketserver.TCPServer(("", PORT), MyHTTPRequestHandler) as httpd:
+    print(f"Server running at http://localhost:{PORT}/")
+    print("Open test.html to see the card rendering demo")
+    httpd.serve_forever()
+EOF
+
+chmod +x serve.py
+
+echo "Build complete! Run ./serve.py to start the development server."

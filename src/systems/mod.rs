@@ -1,6 +1,7 @@
 pub mod card_management;
 pub mod game_logic;
 pub mod input;
+pub mod layout;
 pub mod networking;
 pub mod rendering;
 pub mod state_transitions;
@@ -13,6 +14,7 @@ pub mod tests;
 pub use card_management::*;
 pub use game_logic::*;
 pub use input::*;
+pub use layout::*;
 #[allow(unused_imports)]
 pub use networking::*;
 #[allow(unused_imports)]
