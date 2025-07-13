@@ -127,81 +127,81 @@
         "id": 3,
         "title": "Design Core Game State Management",
         "description": "Implement the game state system that tracks all aspects of a Kseri game",
-        "details": "Create GameState struct containing: player hands, table cards, deck, scores, current turn, collected cards for each player. Implement state transitions for dealing initial cards, player moves, collecting cards, and end game. Use Bevy's ECS system with components for game entities. Create systems for state validation and game flow control.",
-        "testStrategy": "Test state initialization matches Kseri rules (4 cards per player, 4 on table). Verify state transitions are valid. Test score calculation logic. Ensure game end conditions are properly detected.",
-        "priority": "high",
+        "status": "pending",
         "dependencies": [
           2
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Create GameState struct containing: player hands, table cards, deck, scores, current turn, collected cards for each player. Leverage the existing card structures from Task #2 (Card, Suit, Rank enums, Deck with shuffle/draw, Hand with capacity management, TablePile, and Score types in src/components/). Implement state transitions for dealing initial cards, player moves, collecting cards, and end game. Use Bevy's ECS system with components for game entities. Create systems for state validation and game flow control.",
+        "testStrategy": "Test state initialization matches Kseri rules (4 cards per player, 4 on table) using existing Hand and TablePile structures. Verify state transitions are valid. Test score calculation logic using the Score struct. Ensure game end conditions are properly detected when Deck is empty.",
         "subtasks": [
           {
             "id": 1,
             "title": "Design GameState Struct",
             "description": "Create the core GameState struct that will hold all game state data including current phase, turn information, and game conditions",
-            "dependencies": [],
-            "details": "Define the GameState struct with fields for game phase (Setup/Playing/GameOver), current turn, player states, board state reference, and any global game flags. Consider using Bevy's Resource trait for global access.",
             "status": "pending",
+            "dependencies": [],
+            "details": "Define the GameState struct with fields for game phase (Setup/Playing/GameOver), current turn, references to existing components: two Hand instances for players, TablePile for board state, Deck for remaining cards, two Score instances for tracking. Use the structures from src/components/ as building blocks. Consider using Bevy's Resource trait for global access.",
             "testStrategy": ""
           },
           {
             "id": 2,
             "title": "Implement Bevy ECS Components",
             "description": "Create ECS components for all game entities including players, pieces, tiles, and game objects",
+            "status": "pending",
             "dependencies": [
               1
             ],
-            "details": "Design components following Bevy's composition pattern: Player component, Piece component with type/owner, Position component, Health/Stats components, and any special ability markers. Ensure components are lightweight and follow single responsibility principle.",
-            "status": "pending",
+            "details": "Design components following Bevy's composition pattern: Player component with ID and name, integrate existing Card component from src/components/, create CardOwner component to track who owns collected cards, Position component for table layout, and KseriMarker component for special Kseri collections. Ensure components work seamlessly with existing card structures.",
             "testStrategy": ""
           },
           {
             "id": 3,
             "title": "Create State Transition Systems",
             "description": "Implement systems for handling transitions between different game states and phases",
+            "status": "pending",
             "dependencies": [
               1,
               2
             ],
-            "details": "Build state machine using Bevy's States API or custom enum-based approach. Create transition handlers for Setup->Playing, turn changes, and game ending conditions. Implement enter/exit handlers for each state to manage resources and UI updates.",
-            "status": "pending",
+            "details": "Build state machine using Bevy's States API. Create transition handlers for Setup->Playing (using Deck::shuffle and deal methods), turn changes, card collection logic, and game ending when Deck is empty. Implement enter/exit handlers that properly update Hand, TablePile, and Score structures.",
             "testStrategy": ""
           },
           {
             "id": 4,
             "title": "Implement Turn Management",
             "description": "Create turn-based game flow management including player turn tracking and action sequencing",
+            "status": "pending",
             "dependencies": [
               1,
               3
             ],
-            "details": "Develop TurnManager system that tracks current player, validates turn actions, manages action points or movement limits, and triggers turn end/start events. Integrate with Bevy's event system for turn notifications.",
-            "status": "pending",
+            "details": "Develop TurnManager system that tracks current player, validates card plays from Hand to TablePile, implements Kseri collection rules, manages card drawing from Deck when hands are empty, and triggers turn end/start events. Integrate with existing Hand::play_card and TablePile methods.",
             "testStrategy": ""
           },
           {
             "id": 5,
             "title": "Add State Validation Logic",
             "description": "Implement validation systems to ensure game state consistency and prevent invalid actions",
+            "status": "pending",
             "dependencies": [
               2,
               4
             ],
-            "details": "Create validation systems that check move legality, verify game rules compliance, validate state transitions, and handle edge cases. Implement rollback capability for invalid actions and provide clear error feedback.",
-            "status": "pending",
+            "details": "Create validation systems that check move legality using Hand capacity limits, verify Kseri collection rules with TablePile state, validate that played cards exist in player's Hand, ensure Deck has cards before drawing, and handle edge cases. Use existing method signatures from Card/Hand/Deck structs.",
             "testStrategy": ""
           },
           {
             "id": 6,
             "title": "Integrate with Bevy Scheduling",
             "description": "Configure systems with Bevy's scheduling system ensuring proper execution order and thread safety",
+            "status": "pending",
             "dependencies": [
               3,
               4,
               5
             ],
-            "details": "Set up system sets and ordering constraints using Bevy's app builder. Configure parallel execution where safe, establish clear data dependencies, and ensure state mutations happen in predictable order. Add appropriate system labels and stages.",
-            "status": "pending",
+            "details": "Set up system sets and ordering constraints using Bevy's app builder. Configure parallel execution where safe, establish clear data dependencies between Hand/Deck/TablePile mutations, and ensure Score updates happen after valid collections. Add appropriate system labels for card operations and state changes.",
             "testStrategy": ""
           }
         ]
@@ -406,7 +406,61 @@
         "priority": "high",
         "dependencies": [],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up Tokio WebSocket server with basic connection handling",
+            "description": "Initialize a Rust project with tokio-tungstenite for WebSocket support and implement basic connection acceptance",
+            "dependencies": [],
+            "details": "Create new Rust binary crate for the game server. Add dependencies: tokio (with full features), tokio-tungstenite, futures-util, serde, serde_json. Set up basic WebSocket server listening on port 8080. Implement connection upgrade from HTTP to WebSocket. Create basic connection handler that logs new connections and handles the WebSocket handshake.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement client connection pool and session management",
+            "description": "Create data structures to track connected clients and manage their lifecycle",
+            "dependencies": [
+              1
+            ],
+            "details": "Design ClientConnection struct with unique ID, WebSocket sink/stream, connection state, and player name. Create ConnectionPool using Arc<Mutex<HashMap>> to store active connections. Implement connection registration on new WebSocket connections. Add heartbeat/ping mechanism to detect stale connections. Create connection cleanup logic for disconnected clients.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create game session pairing and lobby system",
+            "description": "Implement the logic to pair waiting players into new game sessions",
+            "dependencies": [
+              2
+            ],
+            "details": "Create GameSession struct containing two player IDs, game state, and session ID. Implement waiting queue for unpaired players. Create pairing logic: when second player joins, create new GameSession with both players. Design message protocol for lobby actions: join_lobby, leave_lobby, game_ready. Send game_start message to both players when paired with session ID and opponent info.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement authoritative game state and move validation",
+            "description": "Create server-side game logic that maintains authoritative state and validates all moves",
+            "dependencies": [
+              3
+            ],
+            "details": "Port Kseri game rules to server (or use shared crate). Store authoritative GameState per session including deck, hands, table cards, scores. Implement move validation: verify player owns the card, check if it's their turn, validate move legality. Process moves atomically: validate, apply state change, update scores. Implement special rules like Kseri scoring and card collection logic server-side.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Build state synchronization and reconnection handling",
+            "description": "Create reliable state broadcast system and handle player disconnections gracefully",
+            "dependencies": [
+              4
+            ],
+            "details": "Implement state diff calculation to minimize network traffic. Create reliable broadcast mechanism to send state updates to both players after each move. Add reconnection support: store session state for disconnected players with 60-second timeout. Implement reconnection protocol: client sends session_id and player_id to resume. Handle edge cases: player disconnecting during their turn, simultaneous disconnections, reconnection during state updates.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
       },
       {
         "id": 11,
@@ -479,78 +533,78 @@
       {
         "id": 16,
         "title": "Create Pixel Art Assets for Greek-Themed Kseri Cards",
-        "description": "Design and create comprehensive pixel art assets including all 52 playing cards, card back design, table texture, and UI elements in a cohesive Greek-inspired retro aesthetic",
-        "details": "Create pixel art card designs at 64x96 resolution for optimal readability while maintaining retro aesthetic. Design clear suit symbols: Hearts (red), Diamonds (red), Clubs (black), Spades (black) using 8x8 pixel icons. Implement rank indicators (A, 2-10, J, Q, K) using 5x7 pixel font for clarity. Add Greek-inspired decorative borders using classical patterns like meander/key patterns, with corner flourishes at 4x4 pixels. Design unique face cards (J, Q, K) with simplified Greek deity/hero representations: Jacks as young warriors, Queens as goddesses (Athena, Hera, Aphrodite), Kings as gods (Zeus, Poseidon, Ares). Create cohesive card back design featuring Greek column motifs or amphora patterns in symmetrical layout. Limit color palette to 16 colors maximum: base colors (white, black, 2 grays), suit colors (2 reds, 2 blues), accent colors (gold, bronze, olive, terracotta). Design table texture as repeating 32x32 tile with marble or stone pattern. Create UI element sprites: score display frames (Greek border style), button designs with hover states, turn indicator arrows, deck counter icon. Export all assets as PNG files with transparency. Create sprite atlas for efficient loading in Bevy. Include source files in Aseprite or similar format for future modifications.",
-        "testStrategy": "Verify all 52 cards are visually distinct and readable at actual game size. Test card visibility against table texture background for sufficient contrast. Validate color palette consistency across all assets. Test card rendering in Bevy at different zoom levels (1x, 2x scaling). Verify face card designs are recognizable as J/Q/K at small sizes. Test UI elements for clarity and proper alignment when integrated. Check sprite atlas loading performance. Verify transparency works correctly for overlapping cards. Test aesthetic cohesion by viewing all assets together. Validate that Greek theming is consistent but doesn't impair gameplay readability.",
+        "description": "Design and create comprehensive pixel art assets including all 52 playing cards, card back design, table texture, and UI elements in a cohesive Greek-inspired retro aesthetic using programmatic generation",
         "status": "pending",
         "dependencies": [
           5
         ],
         "priority": "high",
+        "details": "Create pixel art card designs programmatically at 64x96 resolution using Python with PIL/Pillow or Rust image generation libraries. Generate clear suit symbols: Hearts (red), Diamonds (red), Clubs (black), Spades (black) using 8x8 pixel arrays defined in code. Implement rank indicators (A, 2-10, J, Q, K) using programmatically defined 5x7 pixel font matrices. Generate Greek-inspired decorative borders using algorithmic patterns like meander/key patterns, with corner flourishes at 4x4 pixels using mathematical functions. Create unique face cards (J, Q, K) with simplified Greek deity/hero representations using pixel art generation techniques: Jacks as young warriors, Queens as goddesses (Athena, Hera, Aphrodite), Kings as gods (Zeus, Poseidon, Ares). Generate cohesive card back design featuring Greek column motifs or amphora patterns using symmetrical algorithms. Limit color palette to 16 colors maximum defined as constants: base colors (white, black, 2 grays), suit colors (2 reds, 2 blues), accent colors (gold, bronze, olive, terracotta). Create table texture as repeating 32x32 tile with marble or stone pattern using Perlin noise or similar algorithms. Generate UI element sprites programmatically: score display frames (Greek border style), button designs with hover states, turn indicator arrows, deck counter icon. Export all assets as PNG files with transparency. Create sprite atlas for efficient loading in Bevy. Include generation scripts for future modifications.",
+        "testStrategy": "Verify all 52 cards are visually distinct and readable at actual game size. Test card visibility against table texture background for sufficient contrast. Validate color palette consistency across all assets. Test card rendering in Bevy at different zoom levels (1x, 2x scaling). Verify face card designs are recognizable as J/Q/K at small sizes. Test UI elements for clarity and proper alignment when integrated. Check sprite atlas loading performance. Verify transparency works correctly for overlapping cards. Test aesthetic cohesion by viewing all assets together. Validate that Greek theming is consistent but doesn't impair gameplay readability. Test that generation scripts produce consistent output across runs.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Set Up Pixel Art Workspace and Define Color Palette",
-            "description": "Configure the pixel art development environment and establish the 16-color Greek-themed palette that will be used across all game assets",
-            "dependencies": [],
-            "details": "Install and configure Aseprite or similar pixel art software. Create a master palette file with exactly 16 colors: 4 base colors (pure white #FFFFFF, pure black #000000, light gray #C0C0C0, dark gray #808080), 4 suit colors (bright red #FF0000, dark red #8B0000, bright blue #0000FF, dark blue #00008B), and 8 accent colors (gold #FFD700, bronze #CD7F32, olive #808000, terracotta #C65D00, marble white #F8F8FF, aegean blue #1E90FF, laurel green #4B6F44, wine #722F37). Save palette as .pal file for consistent use across all assets.",
+            "title": "Set Up Pixel Art Generation Framework and Define Color Palette",
+            "description": "Configure the programmatic pixel art development environment and establish the 16-color Greek-themed palette as code constants",
             "status": "pending",
-            "testStrategy": "Verify palette file loads correctly in chosen software. Test color visibility against both light and dark backgrounds. Ensure colors maintain distinction when viewed at small scales."
+            "dependencies": [],
+            "details": "Set up Python environment with PIL/Pillow or Rust with image crate. Define color palette as constants in code: 4 base colors (pure white #FFFFFF, pure black #000000, light gray #C0C0C0, dark gray #808080), 4 suit colors (bright red #FF0000, dark red #8B0000, bright blue #0000FF, dark blue #00008B), and 8 accent colors (gold #FFD700, bronze #CD7F32, olive #808000, terracotta #C65D00, marble white #F8F8FF, aegean blue #1E90FF, laurel green #4B6F44, wine #722F37). Create helper functions for pixel drawing, pattern generation, and color manipulation. Implement base image creation functions with proper transparency support.",
+            "testStrategy": "Verify color constants render correctly. Test helper functions produce expected pixel outputs. Ensure generated images maintain proper transparency channels."
           },
           {
             "id": 2,
-            "title": "Design Card Template and Basic Elements",
-            "description": "Create the base 64x96 pixel card template with Greek-inspired borders, suit symbols, and rank typography",
+            "title": "Generate Card Template and Basic Elements Programmatically",
+            "description": "Create code to generate the base 64x96 pixel card template with Greek-inspired borders, suit symbols, and rank typography",
+            "status": "pending",
             "dependencies": [
               1
             ],
-            "details": "Design card template with 2-pixel white border and 1-pixel black outline. Create Greek meander pattern border using 4x4 pixel tiles around card edges. Design 8x8 pixel suit symbols: hearts and diamonds in two-tone red, clubs and spades in black with gray highlights for depth. Implement 5x7 pixel font for ranks (A, 2-10, J, Q, K) positioned at top-left and bottom-right corners. Create mirrored layout so bottom rank/suit appears upside down. Add subtle drop shadow effect using darker palette colors. Save as reusable template layers.",
-            "status": "pending",
-            "testStrategy": "Print cards at actual size to verify readability. Test template with all suit/rank combinations. Verify 2x scaling maintains pixel-perfect clarity."
+            "details": "Write function to generate card template with 2-pixel white border and 1-pixel black outline. Implement Greek meander pattern generation algorithm using 4x4 pixel tile patterns that repeat around card edges. Create suit symbol generators using 8x8 pixel arrays: define hearts and diamonds shapes in code with two-tone red fills, clubs and spades with black and gray shading. Implement 5x7 pixel font renderer by defining each character as a bit pattern. Create layout system that positions rank/suit at top-left and bottom-right corners with proper rotation for bottom elements. Add drop shadow effect generation using alpha blending. Save generation functions as reusable modules.",
+            "testStrategy": "Verify generated templates match expected dimensions. Test meander pattern seamlessly tiles. Validate font rendering for all characters. Check suit symbols are pixel-perfect."
           },
           {
             "id": 3,
-            "title": "Create Face Card Character Designs",
-            "description": "Design unique Greek deity/hero pixel art for all 12 face cards (J, Q, K for each suit)",
+            "title": "Implement Face Card Character Generation Algorithms",
+            "description": "Create algorithms to generate unique Greek deity/hero pixel art for all 12 face cards programmatically",
+            "status": "pending",
             "dependencies": [
               2
             ],
-            "details": "Design Jacks as young Greek warriors (32x48 pixel art area): Hearts - Achilles with spear, Diamonds - Perseus with shield, Clubs - Theseus with sword, Spades - Jason with helmet. Create Queens as goddesses: Hearts - Aphrodite with roses, Diamonds - Athena with owl, Clubs - Hera with peacock feather, Spades - Artemis with bow. Design Kings as major gods: Hearts - Zeus with lightning, Diamonds - Apollo with lyre, Clubs - Poseidon with trident, Spades - Hades with helm. Use limited colors per character (4-5 colors max). Apply Greek pottery art style with profile views and geometric simplification.",
-            "status": "pending",
-            "testStrategy": "Ensure each character is visually distinct at card size. Verify thematic consistency across all face cards. Test that characters don't obscure suit/rank indicators."
+            "details": "Develop character generation system using predefined pixel patterns for Greek-style figures. Create base humanoid template (32x48 pixels) with head, torso, and limbs positions. Define distinguishing features as pixel overlays: Jacks - add warrior elements (spear for Achilles, shield for Perseus, sword for Theseus, helmet for Jason). Queens - implement goddess attributes (roses pattern for Aphrodite, owl sprite for Athena, peacock feather for Hera, bow shape for Artemis). Kings - generate god symbols (lightning bolt for Zeus, lyre outline for Apollo, trident shape for Poseidon, helm silhouette for Hades). Use algorithmic color fills limiting to 4-5 colors per character. Apply Greek pottery art style with profile generation and geometric shape primitives.",
+            "testStrategy": "Ensure generated characters are recognizable as intended deities. Verify algorithmic consistency across regenerations. Test visual distinction between all face cards."
           },
           {
             "id": 4,
-            "title": "Generate Number Cards and Card Back Design",
-            "description": "Complete all 40 number cards (2-10 + Ace) and create an ornate Greek-themed card back design",
+            "title": "Generate Number Cards and Card Back Design Programmatically",
+            "description": "Create code to generate all 40 number cards and an ornate Greek-themed card back design",
+            "status": "pending",
             "dependencies": [
               3
             ],
-            "details": "Apply template to create all number cards with appropriate suit symbol arrangements: Aces with single large centered symbol (16x16 pixels), number cards with standard pip layouts matching traditional playing cards. For card back, design symmetrical pattern featuring Greek amphora in center (24x32 pixels), surrounded by olive branch border pattern. Use gold, terracotta, and aegean blue as primary colors. Add Greek key pattern frame with corner rosettes. Ensure back design works when tiled for deck stack visualization. Export each card as individual PNG with transparency.",
-            "status": "pending",
-            "testStrategy": "Verify all 52 cards are complete and consistent. Test card back pattern symmetry by rotating 180 degrees. Ensure no card information visible from back design."
+            "details": "Write pip layout algorithm for number cards: Ace with single centered 16x16 symbol, numbers 2-10 with traditional pip arrangements calculated algorithmically based on card value. For card back, create symmetrical pattern generator: central amphora shape using bezier curves converted to pixels (24x32), olive branch border using recursive leaf placement algorithm. Implement Greek key pattern generator using path-following algorithm for frame with mathematical corner rosette generation. Use golden ratio for element positioning. Ensure back design has perfect rotational symmetry. Export generation functions with parameters for variations.",
+            "testStrategy": "Verify pip positions match traditional playing card layouts. Test card back rotational symmetry programmatically. Validate all 52 cards generate correctly."
           },
           {
             "id": 5,
-            "title": "Create Table Texture and UI Elements",
-            "description": "Design the repeating marble table texture and all UI component sprites for the game interface",
+            "title": "Generate Table Texture and UI Elements Through Code",
+            "description": "Create algorithms for generating marble table texture and all UI component sprites programmatically",
+            "status": "pending",
             "dependencies": [
               4
             ],
-            "details": "Create 32x32 pixel seamless marble texture using white, light gray, and subtle blue veining. Add slight noise for realistic stone effect. Design UI elements: Score frames (64x24 pixels) with Greek border pattern and gold/bronze coloring, button sprites (48x24 pixels) for 'Play Again' and player names with normal/hover/pressed states using relief effect, turn indicator arrows (16x16 pixels) with animated glow effect frames, deck counter icon (24x24 pixels) showing stacked cards with number overlay area. Create waiting spinner animation (32x32 pixels, 8 frames) using rotating Greek pattern.",
-            "status": "pending",
-            "testStrategy": "Test texture tiling across large area for seamless pattern. Verify UI elements maintain clarity at 1x and 2x scale. Test button state visibility differences."
+            "details": "Implement 32x32 seamless marble texture generator using Perlin noise for realistic veining with white, light gray, and subtle blue color mapping. Create UI element generators: Score frame function creating 64x24 pixel Greek borders using repeating pattern algorithm with parametric gold/bronze gradients. Button generator producing 48x24 pixel sprites with three states (normal/hover/pressed) using elevation simulation through systematic pixel shifting. Turn indicator arrow generator creating 16x16 animated frames with mathematical glow effect using radial gradient approximation. Deck counter icon generator showing 24x24 pixel stacked cards with offset algorithm and number overlay area. Implement 8-frame spinner animation using rotating Greek pattern with transformation matrices.",
+            "testStrategy": "Test texture tiling seamlessness mathematically. Verify UI element generation consistency. Validate animation frames produce smooth motion."
           },
           {
             "id": 6,
-            "title": "Export Assets and Create Sprite Atlas",
-            "description": "Organize, export all assets in proper formats, and create an optimized sprite atlas for Bevy integration",
+            "title": "Create Asset Export Pipeline and Sprite Atlas Generator",
+            "description": "Build automated pipeline to export all generated assets and create optimized sprite atlas for Bevy",
+            "status": "pending",
             "dependencies": [
               5
             ],
-            "details": "Export all 52 cards + 1 card back as individual PNGs with transparency. Create sprite atlas (512x512 or 1024x1024) containing all cards using texture packing tool. Generate accompanying JSON/RON metadata file with sprite coordinates and names. Export table texture as seamless tile PNG. Create UI atlas with all interface elements. Organize file structure: /assets/cards/ for individuals, /assets/atlas/ for packed textures, /assets/ui/ for interface elements. Include source .aseprite files in /assets/source/ for future editing. Create README documenting asset organization and color palette reference.",
-            "status": "pending",
-            "testStrategy": "Verify sprite atlas loads correctly in Bevy with proper UV coordinates. Test that no visual artifacts appear at sprite edges. Confirm all PNGs use correct transparency. Validate file sizes are optimized for web delivery."
+            "details": "Write main generation script that calls all asset generators and exports results. Implement batch PNG export with proper transparency for all 52 cards + 1 card back. Create sprite packing algorithm to generate optimal atlas layout (512x512 or 1024x1024). Generate RON metadata file with sprite coordinates, names, and pivot points for Bevy. Implement file organization system: /assets/cards/ for individuals, /assets/atlas/ for packed textures, /assets/ui/ for interface elements. Include generation scripts in /assets/generators/ with configuration files. Create build script for regenerating all assets with single command. Document generation parameters and customization options in README.",
+            "testStrategy": "Verify automated pipeline generates all assets without errors. Test sprite atlas optimal packing density. Validate RON metadata correctness for Bevy loading. Ensure regeneration produces identical results."
           }
         ]
       }
