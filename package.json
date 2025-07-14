@@ -5,10 +5,11 @@
   "scripts": {
     "build": "./build-wasm.sh",
     "serve": "pm2 start ecosystem.config.js",
-    "stop": "pm2 stop kseri-dev-server",
-    "restart": "pm2 restart kseri-dev-server",
-    "logs": "pm2 logs kseri-dev-server",
+    "stop": "pm2 stop kseri-branch-server",
+    "restart": "pm2 restart kseri-branch-server",
+    "logs": "pm2 logs kseri-branch-server",
     "test": "node tests/visual/test-card-rendering.js",
+    "test:final": "node tests/visual/test-final.js",
     "test:pm2": "node tests/visual/test-pm2-deployment.js",
     "test:all": "npm run test:pm2 && npm run test",
     "dev": "npm run build && npm run serve && sleep 5 && npm run test"

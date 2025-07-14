@@ -1,6 +1,6 @@
 module.exports = {
   apps: [{
-    name: 'kseri-dev-server',
+    name: 'kseri-branch-server',
     script: 'serve.py',
     interpreter: 'python3',
     cwd: '/home/arkid/DEV/kseri-card-rendering',

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Card Rendering Screenshot</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        img {
+            width: 100%;
+            border: 2px solid #444;
+            margin: 20px 0;
+        }
+        .info {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kseri Card Rendering Test Results</h1>
+        
+        <div class="info">
+            <h2>Test Status:</h2>
+            <p class="success">✅ WASM initialized successfully</p>
+            <p class="success">✅ Canvas resized to 800x600 (Bevy active)</p>
+            <p class="success">✅ Game logic running (cards dealt to players)</p>
+            <p class="error">❌ Card PNG assets returning 404 errors</p>
+        </div>
+
+        <div class="info">
+            <h2>What's Working:</h2>
+            <ul>
+                <li>The Bevy game engine is running</li>
+                <li>Cards are being spawned and positioned correctly</li>
+                <li>Game state machine is functioning</li>
+                <li>8 cards were dealt (4 to each player)</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h2>Issue:</h2>
+            <p>The card PNG files exist in assets/cards/individual/ but are not being served correctly by the HTTP server. This is why you see a black canvas - the game is running but can't load the visual assets.</p>
+        </div>
+
+        <h2>Screenshot:</h2>
+        <img src="interactive-screenshot.png" alt="Card Rendering Screenshot">
+        
+        <div class="info">
+            <h2>Console Output Shows:</h2>
+            <pre>
+✅ Kseri WASM: Starting initialization...
+✅ Kseri: run() function called
+✅ Kseri WASM: Initialization complete!
+✅ Setup complete - red square should be visible
+✅ Loading card textures...
+❌ Failed to load resource: 404 (File not found) - for all 53 PNG files
+✅ Auto-starting game for testing...
+✅ Setting up new game
+✅ Game setup complete. Round: 1, transitioning to Playing state
+✅ Spawning visual for cards in player hands
+            </pre>
+        </div>
+    </div>
+</body>
+</html>
